@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}About Us{% endblock %}
+
+{% block content %}
+
+<!-- Spacer for fixed nav -->
+<div class="h-20"></div>
+
+<!-- ============================================================= -->
+<!-- ABOUT HERO                                                    -->
+<!-- ============================================================= -->
+<section class="py-24 razor-lines text-center">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-center gap-3 mb-6">
+            <span class="block w-10 h-px bg-barber-red/50"></span>
+            <span class="text-barber-red/70 text-xs font-semibold uppercase tracking-[0.3em]">Our Story</span>
+            <span class="block w-10 h-px bg-barber-red/50"></span>
+        </div>
+        <h1 class="font-display text-4xl sm:text-5xl font-bold mb-6">We as a Team</h1>
+        <p class="text-barber-cream/50 leading-relaxed text-lg">
+            Blade &amp; Brush was founded on a simple belief: a great haircut changes how you carry yourself.
+            We're a crew of passionate barbers who treat every chair like a craft studio — no rush, no shortcuts, just
+            sharp results and good conversation.
+        </p>
+    </div>
+</section>
+
+<div class="razor-divider max-w-xl mx-auto"></div>
+
+<!-- ============================================================= -->
+<!-- TEAM GRID                                                     -->
+<!-- ============================================================= -->
+<section class="py-24">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+            {% for member in team %}
+            <div class="card-lift bg-barber-card border border-barber-border rounded-xl p-8 flex flex-col items-center text-center">
+                <!-- Avatar placeholder -->
+                <div class="team-avatar mb-6">
+                    <svg class="w-10 h-10 text-barber-red/40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                        <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                </div>
+                <h3 class="font-display text-xl font-semibold">{{ member.name }}</h3>
+                <p class="text-barber-red text-sm font-medium mt-1 mb-4">{{ member.role }}</p>
+                <p class="text-sm text-barber-cream/50 leading-relaxed">{{ member.bio }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Values -->
+<section class="py-24 bg-barber-card border-y border-barber-border">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <span class="text-barber-red text-xs font-semibold uppercase tracking-[0.3em]">Our Values</span>
+        <h2 class="font-display text-3xl font-bold mt-3 mb-12">What Drives Us</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <h3 class="font-display text-lg font-semibold text-barber-red mb-2">Craft First</h3>
+                <p class="text-sm text-barber-cream/50 leading-relaxed">Every fade, every line-up, every detail — we treat barbering as an art form.</p>
+            </div>
+            <div>
+                <h3 class="font-display text-lg font-semibold text-barber-red mb-2">Respect Always</h3>
+                <p class="text-sm text-barber-cream/50 leading-relaxed">Your time, your style preferences, your comfort. We listen first, cut second.</p>
+            </div>
+            <div>
+                <h3 class="font-display text-lg font-semibold text-barber-red mb-2">Community Roots</h3>
+                <p class="text-sm text-barber-cream/50 leading-relaxed">More than a barbershop — we're a neighborhood gathering place where everyone belongs.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="barber-pole-stripe h-2" aria-hidden="true"></div>
+
+{% endblock %}
