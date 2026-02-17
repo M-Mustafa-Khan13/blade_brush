@@ -1,0 +1,453 @@
+{% extends "base.html" %}
+
+{% block title %}Register as a Barber{% endblock %}
+
+{% block content %}
+
+<!-- Spacer for fixed navbar -->
+<div class="h-24"></div>
+
+{% if success %}
+<!-- ============================================================= -->
+<!-- SUCCESS CONFIRMATION                                          -->
+<!-- ============================================================= -->
+<section class="min-h-[70vh] flex items-center justify-center px-4 py-24">
+    <div class="max-w-lg w-full text-center">
+        <div class="glass-card rounded-2xl p-12 border border-barber-border">
+            <!-- Animated checkmark -->
+            <div class="mx-auto w-20 h-20 rounded-full bg-green-500/10 border-2 border-green-500/30 flex items-center justify-center mb-8">
+                <svg class="w-10 h-10 text-green-500" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                </svg>
+            </div>
+
+            <h1 class="font-display text-3xl sm:text-4xl font-bold mb-4">Application Received!</h1>
+            <p class="text-barber-cream/50 text-lg leading-relaxed mb-10">
+                We'll review your submission and get back to you shortly.
+            </p>
+
+            <a href="{{ url_for('home') }}" class="btn-primary text-base px-8 py-3">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                </svg>
+                Back to Home
+            </a>
+        </div>
+    </div>
+</section>
+
+{% else %}
+<!-- ============================================================= -->
+<!-- REGISTRATION FORM                                             -->
+<!-- ============================================================= -->
+<section class="py-16 px-4" x-data="registerForm()">
+    <div class="max-w-5xl mx-auto">
+
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <span class="text-barber-red text-xs font-semibold uppercase tracking-[0.3em]">Join Our Team</span>
+            <h1 class="font-display text-3xl sm:text-4xl md:text-5xl font-bold mt-3">Register as a Barber</h1>
+            <p class="mt-4 text-barber-cream/40 max-w-2xl mx-auto">
+                Ready to join Blade & Brush? Fill out the form below and we'll review your application.
+            </p>
+            <div class="razor-divider w-24 mx-auto mt-6"></div>
+        </div>
+
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="max-w-4xl mx-auto mb-8 space-y-2">
+            {% for category, message in messages %}
+            <div class="flex items-center gap-3 px-4 py-3 rounded-lg border
+                        {% if category == 'error' %}bg-red-500/10 border-red-500/20 text-red-400
+                        {% else %}bg-green-500/10 border-green-500/20 text-green-400{% endif %}">
+                {% if category == 'error' %}
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                {% else %}
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                {% endif %}
+                <span class="text-sm">{{ message }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <!-- Form -->
+        <form method="POST" enctype="multipart/form-data" class="glass-card rounded-2xl border border-barber-border p-8 sm:p-10 lg:p-12">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-10 gap-y-8">
+
+                <!-- ========== LEFT COLUMN ========== -->
+                <div class="space-y-8">
+
+                    <!-- PERSONAL INFO -->
+                    <div>
+                        <h3 class="flex items-center gap-2 text-barber-red font-semibold text-sm uppercase tracking-widest mb-6">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            Personal Information
+                        </h3>
+
+                        <!-- Full Name -->
+                        <div class="mb-5">
+                            <label class="block text-sm text-barber-cream/60 mb-2">Full Name *</label>
+                            <div class="relative">
+                                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-barber-cream/25" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                <input type="text" name="full_name" required
+                                       value="{{ form.full_name if form else '' }}"
+                                       placeholder="John Doe"
+                                       class="form-input pl-11">
+                            </div>
+                        </div>
+
+                        <!-- Phone -->
+                        <div class="mb-5">
+                            <label class="block text-sm text-barber-cream/60 mb-2">Phone Number *</label>
+                            <div class="relative">
+                                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-barber-cream/25" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.362 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+                                <input type="tel" name="phone" required
+                                       value="{{ form.phone if form else '' }}"
+                                       placeholder="(555) 123-4567"
+                                       class="form-input pl-11">
+                            </div>
+                        </div>
+
+                        <!-- Email -->
+                        <div>
+                            <label class="block text-sm text-barber-cream/60 mb-2">Email Address *</label>
+                            <div class="relative">
+                                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-barber-cream/25" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                                <input type="email" name="email" required
+                                       value="{{ form.email if form else '' }}"
+                                       placeholder="john@example.com"
+                                       class="form-input pl-11">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- IDENTITY VERIFICATION -->
+                    <div>
+                        <h3 class="flex items-center gap-2 text-barber-red font-semibold text-sm uppercase tracking-widest mb-6">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                            Identity Verification
+                        </h3>
+
+                        <!-- Government ID -->
+                        <div>
+                            <label class="block text-sm text-barber-cream/60 mb-2">Government ID *</label>
+                            <p class="text-xs text-barber-cream/30 mb-3">Upload a clear photo or PDF of your government-issued ID</p>
+                            <div class="file-upload-area" @click="$refs.govIdInput.click()"
+                                 @dragover.prevent="dragOver = 'govId'" @dragleave="dragOver = ''"
+                                 @drop.prevent="dragOver = ''; $refs.govIdInput.files = $event.dataTransfer.files; govIdName = $refs.govIdInput.files[0]?.name"
+                                 :class="dragOver === 'govId' && 'border-barber-red bg-barber-red/5'">
+                                <input type="file" name="gov_id" accept=".png,.jpg,.jpeg,.webp,.pdf" required
+                                       x-ref="govIdInput" class="hidden"
+                                       @change="govIdName = $event.target.files[0]?.name">
+                                <div x-show="!govIdName" class="text-center">
+                                    <svg class="w-8 h-8 mx-auto text-barber-cream/20 mb-2" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                    <p class="text-sm text-barber-cream/40">Click or drag to upload</p>
+                                    <p class="text-xs text-barber-cream/20 mt-1">PNG, JPG, WEBP, PDF (max 5MB)</p>
+                                </div>
+                                <div x-show="govIdName" class="flex items-center gap-3">
+                                    <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                    <span class="text-sm text-barber-cream/60 truncate" x-text="govIdName"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- EXPERIENCE -->
+                    <div>
+                        <h3 class="flex items-center gap-2 text-barber-red font-semibold text-sm uppercase tracking-widest mb-6">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            Experience
+                        </h3>
+
+                        <div>
+                            <label class="block text-sm text-barber-cream/60 mb-2">Years of Experience *</label>
+                            <div class="relative">
+                                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-barber-cream/25" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                <input type="number" name="years_experience" min="0" max="50" required
+                                       value="{{ form.years_experience if form else '' }}"
+                                       placeholder="5"
+                                       class="form-input pl-11">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AVAILABILITY SCHEDULE -->
+                    <div x-data="availabilityGrid()">
+                        <h3 class="flex items-center gap-2 text-barber-red font-semibold text-sm uppercase tracking-widest mb-6">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                            Availability Schedule
+                        </h3>
+                        <p class="text-xs text-barber-cream/30 mb-4">Select available shifts for each day you can work</p>
+
+                        <!-- Column headers -->
+                        <div class="grid grid-cols-4 gap-1.5 mb-1.5">
+                            <div></div>
+                            <div class="text-center text-[10px] text-barber-cream/30 uppercase tracking-wider py-1">Morning<br><span class="text-barber-cream/20">9–12</span></div>
+                            <div class="text-center text-[10px] text-barber-cream/30 uppercase tracking-wider py-1">Afternoon<br><span class="text-barber-cream/20">12–4</span></div>
+                            <div class="text-center text-[10px] text-barber-cream/30 uppercase tracking-wider py-1">Evening<br><span class="text-barber-cream/20">4–8</span></div>
+                        </div>
+
+                        <!-- Schedule rows -->
+                        <template x-for="day in days" :key="day">
+                            <div class="grid grid-cols-4 gap-1.5 mb-1.5">
+                                <!-- Day label -->
+                                <div class="flex items-center justify-between px-3 py-2.5 rounded-lg bg-barber-muted/30 border border-barber-border/50">
+                                    <span class="text-xs font-medium text-barber-cream/60" x-text="day"></span>
+                                    <button type="button" @click="toggleDay(day)"
+                                            class="text-[9px] px-1.5 py-0.5 rounded text-barber-cream/25 hover:text-barber-red hover:bg-barber-red/10 transition-all"
+                                            :class="isDayFull(day) && 'text-barber-red bg-barber-red/10'"
+                                            x-text="isDayFull(day) ? 'Clear' : 'All'">
+                                    </button>
+                                </div>
+                                <!-- Shift cells -->
+                                <template x-for="shift in shifts" :key="day + '-' + shift">
+                                    <label class="cursor-pointer">
+                                        <input type="checkbox"
+                                               :name="'avail_' + day.toLowerCase() + '[]'"
+                                               :value="shift"
+                                               :checked="isSelected(day, shift)"
+                                               @change="toggle(day, shift)"
+                                               class="hidden">
+                                        <div class="flex items-center justify-center py-2.5 rounded-lg border transition-all duration-200"
+                                             :class="isSelected(day, shift)
+                                                 ? 'border-barber-red bg-barber-red/15 text-barber-red'
+                                                 : 'border-barber-border/50 bg-barber-muted/20 text-barber-cream/20 hover:border-barber-cream/20 hover:text-barber-cream/40'">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+                                                 x-show="isSelected(day, shift)">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                                            </svg>
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"
+                                                 x-show="!isSelected(day, shift)">
+                                                <circle cx="12" cy="12" r="1"/>
+                                            </svg>
+                                        </div>
+                                    </label>
+                                </template>
+                            </div>
+                        </template>
+
+                        <!-- Quick actions -->
+                        <div class="flex gap-2 mt-3">
+                            <button type="button" @click="selectAll()"
+                                    class="text-[10px] px-3 py-1.5 rounded-md border border-barber-border/50 text-barber-cream/30 hover:text-barber-red hover:border-barber-red/30 transition-all">
+                                Select All
+                            </button>
+                            <button type="button" @click="clearAll()"
+                                    class="text-[10px] px-3 py-1.5 rounded-md border border-barber-border/50 text-barber-cream/30 hover:text-barber-red hover:border-barber-red/30 transition-all">
+                                Clear All
+                            </button>
+                            <button type="button" @click="selectWeekdays()"
+                                    class="text-[10px] px-3 py-1.5 rounded-md border border-barber-border/50 text-barber-cream/30 hover:text-barber-red hover:border-barber-red/30 transition-all">
+                                Weekdays Only
+                            </button>
+                        </div>
+
+                        <!-- Summary -->
+                        <div class="mt-4 px-3 py-2 rounded-lg bg-barber-muted/20 border border-barber-border/30" x-show="totalSelected() > 0">
+                            <p class="text-[11px] text-barber-cream/40">
+                                <span class="text-barber-red font-medium" x-text="totalSelected()"></span> shift<span x-show="totalSelected() !== 1">s</span> selected across
+                                <span class="text-barber-red font-medium" x-text="activeDays()"></span> day<span x-show="activeDays() !== 1">s</span>
+                            </p>
+                        </div>
+
+                        <!-- Hidden field to send JSON schedule -->
+                        <input type="hidden" name="availability_schedule" :value="JSON.stringify(schedule)">
+
+                        <!-- Preferred Location -->
+                        <div class="mt-5">
+                            <label class="block text-sm text-barber-cream/60 mb-2">Preferred Location *</label>
+                            <div class="relative">
+                                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-barber-cream/25" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                <select name="preferred_location" required class="form-input pl-11 appearance-none cursor-pointer">
+                                    <option value="" disabled selected class="bg-barber-dark">Select a location</option>
+                                    <option value="Kitchener" class="bg-barber-dark">Kitchener</option>
+                                    <option value="London" class="bg-barber-dark">London</option>
+                                    <option value="Guelph" class="bg-barber-dark">Guelph</option>
+                                    <option value="Mississauga" class="bg-barber-dark">Mississauga</option>
+                                    <option value="Any" class="bg-barber-dark">Any Location</option>
+                                </select>
+                                <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-barber-cream/25 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========== RIGHT COLUMN ========== -->
+                <div class="space-y-8">
+
+                    <!-- PROFESSIONAL PROFILE -->
+                    <div>
+                        <h3 class="flex items-center gap-2 text-barber-red font-semibold text-sm uppercase tracking-widest mb-6">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>
+                            Professional Profile
+                        </h3>
+
+                        <!-- Profile Picture -->
+                        <div class="mb-5">
+                            <label class="block text-sm text-barber-cream/60 mb-2">Profile Picture *</label>
+                            <div class="file-upload-area" @click="$refs.profilePicInput.click()"
+                                 @dragover.prevent="dragOver = 'profile'" @dragleave="dragOver = ''"
+                                 @drop.prevent="dragOver = ''; $refs.profilePicInput.files = $event.dataTransfer.files; profilePicName = $refs.profilePicInput.files[0]?.name"
+                                 :class="dragOver === 'profile' && 'border-barber-red bg-barber-red/5'">
+                                <input type="file" name="profile_pic" accept=".png,.jpg,.jpeg,.webp" required
+                                       x-ref="profilePicInput" class="hidden"
+                                       @change="profilePicName = $event.target.files[0]?.name">
+                                <div x-show="!profilePicName" class="text-center">
+                                    <svg class="w-8 h-8 mx-auto text-barber-cream/20 mb-2" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                                    <p class="text-sm text-barber-cream/40">Click or drag to upload</p>
+                                    <p class="text-xs text-barber-cream/20 mt-1">PNG, JPG, WEBP (max 5MB)</p>
+                                </div>
+                                <div x-show="profilePicName" class="flex items-center gap-3">
+                                    <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                    <span class="text-sm text-barber-cream/60 truncate" x-text="profilePicName"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bio -->
+                        <div>
+                            <label class="block text-sm text-barber-cream/60 mb-2">Professional Bio *</label>
+                            <textarea name="bio" rows="4" required
+                                      placeholder="Tell us about your barbering journey, skills, and what makes you stand out..."
+                                      class="form-input resize-none">{{ form.bio if form else '' }}</textarea>
+                        </div>
+                    </div>
+
+                    <!-- SPECIALTIES -->
+                    <div>
+                        <h3 class="flex items-center gap-2 text-barber-red font-semibold text-sm uppercase tracking-widest mb-6">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            Specialties *
+                        </h3>
+                        <div class="grid grid-cols-2 gap-3">
+                            {% for spec in specialties %}
+                            <label class="specialty-tag cursor-pointer">
+                                <input type="checkbox" name="specialties" value="{{ spec }}"
+                                       {% if selected_specialties and spec in selected_specialties %}checked{% endif %}
+                                       class="hidden peer">
+                                <div class="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-barber-border bg-barber-muted/50 text-sm text-barber-cream/50 transition-all duration-200
+                                            peer-checked:border-barber-red peer-checked:bg-barber-red/10 peer-checked:text-barber-red
+                                            hover:border-barber-cream/20 hover:text-barber-cream/70">
+                                    <svg class="w-3.5 h-3.5 opacity-0 peer-checked:opacity-100 transition-opacity" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                    <span>{{ spec }}</span>
+                                </div>
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- CERTIFICATION -->
+                    <div>
+                        <h3 class="flex items-center gap-2 text-barber-red font-semibold text-sm uppercase tracking-widest mb-6">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                            Certification
+                        </h3>
+
+                        <div>
+                            <label class="block text-sm text-barber-cream/60 mb-2">Barber License *</label>
+                            <p class="text-xs text-barber-cream/30 mb-3">Upload a copy of your valid barber license</p>
+                            <div class="file-upload-area" @click="$refs.licenseInput.click()"
+                                 @dragover.prevent="dragOver = 'license'" @dragleave="dragOver = ''"
+                                 @drop.prevent="dragOver = ''; $refs.licenseInput.files = $event.dataTransfer.files; licenseName = $refs.licenseInput.files[0]?.name"
+                                 :class="dragOver === 'license' && 'border-barber-red bg-barber-red/5'">
+                                <input type="file" name="barber_license" accept=".png,.jpg,.jpeg,.webp,.pdf" required
+                                       x-ref="licenseInput" class="hidden"
+                                       @change="licenseName = $event.target.files[0]?.name">
+                                <div x-show="!licenseName" class="text-center">
+                                    <svg class="w-8 h-8 mx-auto text-barber-cream/20 mb-2" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                    <p class="text-sm text-barber-cream/40">Click or drag to upload</p>
+                                    <p class="text-xs text-barber-cream/20 mt-1">PNG, JPG, WEBP, PDF (max 5MB)</p>
+                                </div>
+                                <div x-show="licenseName" class="flex items-center gap-3">
+                                    <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                    <span class="text-sm text-barber-cream/60 truncate" x-text="licenseName"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit -->
+            <div class="mt-10 pt-8 border-t border-barber-border text-center">
+                <button type="submit" class="btn-primary text-base px-12 py-3.5 pulse-glow">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    Submit Application
+                </button>
+                <p class="mt-4 text-xs text-barber-cream/25">All fields marked with * are required</p>
+            </div>
+        </form>
+    </div>
+</section>
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+function registerForm() {
+    return {
+        govIdName: '',
+        profilePicName: '',
+        licenseName: '',
+        dragOver: '',
+    };
+}
+
+function availabilityGrid() {
+    return {
+        days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        shifts: ['Morning', 'Afternoon', 'Evening'],
+        schedule: {},
+        init() {
+            this.days.forEach(d => { this.schedule[d] = []; });
+        },
+        isSelected(day, shift) {
+            return this.schedule[day]?.includes(shift) || false;
+        },
+        toggle(day, shift) {
+            if (!this.schedule[day]) this.schedule[day] = [];
+            const idx = this.schedule[day].indexOf(shift);
+            if (idx > -1) {
+                this.schedule[day].splice(idx, 1);
+            } else {
+                this.schedule[day].push(shift);
+            }
+        },
+        toggleDay(day) {
+            if (this.isDayFull(day)) {
+                this.schedule[day] = [];
+            } else {
+                this.schedule[day] = [...this.shifts];
+            }
+        },
+        isDayFull(day) {
+            return this.schedule[day]?.length === this.shifts.length;
+        },
+        selectAll() {
+            this.days.forEach(d => { this.schedule[d] = [...this.shifts]; });
+        },
+        clearAll() {
+            this.days.forEach(d => { this.schedule[d] = []; });
+        },
+        selectWeekdays() {
+            this.clearAll();
+            ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'].forEach(d => {
+                this.schedule[d] = [...this.shifts];
+            });
+        },
+        totalSelected() {
+            return Object.values(this.schedule).reduce((sum, arr) => sum + arr.length, 0);
+        },
+        activeDays() {
+            return Object.values(this.schedule).filter(arr => arr.length > 0).length;
+        }
+    };
+}
+</script>
+{% endblock %}
