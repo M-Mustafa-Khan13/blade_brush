@@ -1,0 +1,490 @@
+/* ================================================================
+   BLADE & BRUSH — Black & Red Theme
+   ================================================================ */
+
+/* ---- Alpine cloak ---- */
+[x-cloak] { display: none !important; }
+
+/* ================================================================
+   BARBER-POLE ACCENT BAR
+   ================================================================ */
+.barber-pole-top {
+    position: relative;
+}
+.barber-pole-top::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg,
+        #dc2626 0%, #dc2626 33%,
+        #f0eded 33%, #f0eded 66%,
+        #dc2626 66%, #dc2626 100%
+    );
+}
+
+/* ================================================================
+   DIAGONAL RAZOR-LINE BACKGROUND PATTERN
+   ================================================================ */
+.razor-lines {
+    background-image: repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 18px,
+        rgba(220, 38, 38, 0.025) 18px,
+        rgba(220, 38, 38, 0.025) 19px
+    );
+}
+
+/* ================================================================
+   SCISSORS SILHOUETTE PATTERN
+   ================================================================ */
+.scissors-bg {
+    position: relative;
+}
+.scissors-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.015;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 24 24' fill='none' stroke='%23dc2626' stroke-width='1'%3E%3Ccircle cx='6' cy='6' r='3'/%3E%3Ccircle cx='6' cy='18' r='3'/%3E%3Cline x1='20' y1='4' x2='8.12' y2='15.88'/%3E%3Cline x1='14.47' y1='14.48' x2='20' y2='20'/%3E%3Cline x1='8.12' y1='8.12' x2='12' y2='12'/%3E%3C/svg%3E");
+    background-size: 100px 100px;
+}
+
+/* ================================================================
+   BUTTONS — Primary (Red)
+   ================================================================ */
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.5rem;
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    color: #fff;
+    font-weight: 600;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+.btn-primary::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -75%;
+    width: 50%;
+    height: 200%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    transform: skewX(-20deg);
+    transition: left 0.6s ease;
+}
+.btn-primary:hover::after {
+    left: 125%;
+}
+.btn-primary:hover {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 25px rgba(220, 38, 38, 0.35);
+}
+
+.btn-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.5rem;
+    border: 1.5px solid rgba(220, 38, 38, 0.4);
+    color: #dc2626;
+    font-weight: 500;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+}
+.btn-outline:hover {
+    border-color: #dc2626;
+    background: rgba(220, 38, 38, 0.08);
+    transform: translateY(-1px);
+}
+
+/* ================================================================
+   NAV LINK UNDERLINE ANIMATION
+   ================================================================ */
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: #dc2626;
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+.nav-link:hover::after {
+    width: 60%;
+}
+
+/* ================================================================
+   CARD HOVER LIFT
+   ================================================================ */
+.card-lift {
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+.card-lift:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(220, 38, 38, 0.1);
+}
+
+/* ================================================================
+   SNIP SHIMMER (red sweep on hover)
+   ================================================================ */
+.snip-shimmer {
+    position: relative;
+    overflow: hidden;
+}
+.snip-shimmer::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -100%;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(220, 38, 38, 0.5), transparent);
+    transition: left 0.5s ease;
+}
+.snip-shimmer:hover::before {
+    left: 100%;
+}
+
+/* ================================================================
+   HERO VIDEO SLIDER
+   ================================================================ */
+.hero-slide {
+    position: absolute;
+    inset: 0;
+    transition: opacity 0.8s ease-in-out;
+}
+.hero-slide video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Gradient fallback */
+.hero-fallback {
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a0808 40%, #0a0a0a 100%);
+}
+
+/* ================================================================
+   HERO OVERLAY
+   ================================================================ */
+.hero-overlay {
+    background: linear-gradient(
+        to bottom,
+        rgba(10, 10, 10, 0.3) 0%,
+        rgba(10, 10, 10, 0.55) 50%,
+        rgba(10, 10, 10, 0.95) 100%
+    );
+}
+
+/* ================================================================
+   SECTION DIVIDER — red razor line
+   ================================================================ */
+.razor-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(220, 38, 38, 0.3), transparent);
+}
+
+/* ================================================================
+   ACTIVE DOT (slider)
+   ================================================================ */
+.dot-active {
+    background-color: #dc2626 !important;
+    transform: scale(1.3);
+    box-shadow: 0 0 8px rgba(220, 38, 38, 0.5);
+}
+
+/* ================================================================
+   PULSE GLOW (red)
+   ================================================================ */
+@keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+    50%      { box-shadow: 0 0 25px 6px rgba(220, 38, 38, 0.15); }
+}
+.pulse-glow {
+    animation: pulse-glow 3s ease-in-out infinite;
+}
+
+/* ================================================================
+   SCROLLBAR
+   ================================================================ */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #0a0a0a;
+}
+::-webkit-scrollbar-thumb {
+    background: #222;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #dc2626;
+}
+
+/* ================================================================
+   BARBER POLE SPIN (decorative strip)
+   ================================================================ */
+@keyframes pole-spin {
+    0%   { background-position: 0 0; }
+    100% { background-position: 0 60px; }
+}
+.barber-pole-stripe {
+    background: repeating-linear-gradient(
+        -45deg,
+        #dc2626 0px,
+        #dc2626 10px,
+        #0a0a0a 10px,
+        #0a0a0a 20px,
+        #222 20px,
+        #222 30px
+    );
+    background-size: 42.43px 42.43px;
+    animation: pole-spin 2s linear infinite;
+}
+
+/* ================================================================
+   SLOW SPIN (for fallback icons)
+   ================================================================ */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+/* ================================================================
+   FALLING BARBER TOOLS — 3D drop animation
+   ================================================================ */
+@keyframes fallTool {
+    0% {
+        transform: translateY(0) translateX(0) rotate(var(--rot-start)) scale(0.8);
+        opacity: 0;
+    }
+    5% {
+        opacity: 1;
+    }
+    85% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(110vh) translateX(var(--drift)) rotate(var(--rot-end)) scale(1);
+        opacity: 0;
+    }
+}
+
+.falling-tool {
+    will-change: transform, opacity;
+    filter: blur(0.3px);
+}
+
+/* ================================================================
+   FADE-IN ON SCROLL
+   ================================================================ */
+.fade-up {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ================================================================
+   TEAM CARD (about page)
+   ================================================================ */
+.team-avatar {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #161616, #222);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid rgba(220, 38, 38, 0.25);
+}
+
+/* ================================================================
+   RESPONSIVE TUNING
+   ================================================================ */
+@media (max-width: 640px) {
+    .hero-content h1 {
+        font-size: 2rem;
+        line-height: 1.2;
+    }
+}
+
+/* ================================================================
+   REDUCE MOTION for accessibility
+   ================================================================ */
+@media (prefers-reduced-motion: reduce) {
+    .falling-tool,
+    .barber-pole-stripe,
+    .pulse-glow {
+        animation: none !important;
+    }
+    .hero-slide {
+        transition: none;
+    }
+    #scissor-intro {
+        display: none !important;
+    }
+}
+
+/* ================================================================
+   SCISSOR CUT PAGE TRANSITION
+   ================================================================ */
+
+/* Scissor drops from top to ~85% of viewport */
+@keyframes scissorDrop {
+    0%   { top: 8%;  opacity: 0; }
+    8%   { opacity: 1; }
+    100% { top: 85%; opacity: 1; }
+}
+.intro-scissor-drop {
+    animation: scissorDrop 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* Scissor snip — subtle open/close rotation */
+@keyframes scissorSnip {
+    0%, 100% { transform: translateX(-50%) rotate(0deg); }
+    15%      { transform: translateX(-50%) rotate(8deg); }
+    30%      { transform: translateX(-50%) rotate(-3deg); }
+    45%      { transform: translateX(-50%) rotate(6deg); }
+    60%      { transform: translateX(-50%) rotate(-2deg); }
+    75%      { transform: translateX(-50%) rotate(4deg); }
+    90%      { transform: translateX(-50%) rotate(-1deg); }
+}
+.intro-snip {
+    animation: scissorSnip 1.4s ease-in-out forwards;
+}
+
+/* Cut line draws downward */
+@keyframes lineReveal {
+    0%   { opacity: 0; clip-path: inset(0 0 100% 0); }
+    10%  { opacity: 1; }
+    100% { opacity: 1; clip-path: inset(0 0 0% 0); }
+}
+.intro-line-draw {
+    animation: lineReveal 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* Left panel slides out */
+@keyframes splitLeft {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-105%); }
+}
+.intro-split-left {
+    animation: splitLeft 0.8s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+/* Right panel slides out */
+@keyframes splitRight {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(105%); }
+}
+.intro-split-right {
+    animation: splitRight 0.8s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+/* ================================================================
+   SHATTER & FALL — brand text breaks apart on split
+   ================================================================ */
+.shatter-letter {
+    transition: opacity 0.15s ease;
+    opacity: 0;
+}
+
+/* Letters fade in as scissor cuts (triggered when cutting starts) */
+div[x-show="cutting"] .shatter-letter {
+    animation: letterAppear 0.4s ease forwards;
+}
+@keyframes letterAppear {
+    0%   { opacity: 0; transform: scale(0.7); }
+    100% { opacity: 1; transform: scale(1); }
+}
+/* Stagger the appearance */
+div[x-show="cutting"] .shatter-letter:nth-child(1)  { animation-delay: 0.3s; }
+div[x-show="cutting"] .shatter-letter:nth-child(2)  { animation-delay: 0.38s; }
+div[x-show="cutting"] .shatter-letter:nth-child(3)  { animation-delay: 0.46s; }
+div[x-show="cutting"] .shatter-letter:nth-child(4)  { animation-delay: 0.54s; }
+div[x-show="cutting"] .shatter-letter:nth-child(5)  { animation-delay: 0.62s; }
+div[x-show="cutting"] .shatter-letter:nth-child(6)  { animation-delay: 0.70s; }
+div[x-show="cutting"] .shatter-letter:nth-child(7)  { animation-delay: 0.78s; }
+div[x-show="cutting"] .shatter-letter:nth-child(8)  { animation-delay: 0.86s; }
+div[x-show="cutting"] .shatter-letter:nth-child(9)  { animation-delay: 0.94s; }
+div[x-show="cutting"] .shatter-letter:nth-child(10) { animation-delay: 1.02s; }
+div[x-show="cutting"] .shatter-letter:nth-child(11) { animation-delay: 1.10s; }
+
+/* Each letter falls with unique trajectory when panels split */
+@keyframes shatterFall1 {
+    0%   { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+    100% { transform: translate(-120px, 400px) rotate(-75deg); opacity: 0; }
+}
+@keyframes shatterFall2 {
+    0%   { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+    100% { transform: translate(-60px, 350px) rotate(40deg); opacity: 0; }
+}
+@keyframes shatterFall3 {
+    0%   { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+    100% { transform: translate(-30px, 420px) rotate(-55deg); opacity: 0; }
+}
+@keyframes shatterFall4 {
+    0%   { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+    100% { transform: translate(15px, 380px) rotate(65deg); opacity: 0; }
+}
+@keyframes shatterFall5 {
+    0%   { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+    100% { transform: translate(-45px, 450px) rotate(-85deg); opacity: 0; }
+}
+@keyframes shatterFall6 {
+    0%   { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+    100% { transform: translate(5px, 300px) rotate(30deg); opacity: 0; }
+}
+@keyframes shatterFall7 {
+    0%   { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+    100% { transform: translate(50px, 440px) rotate(70deg); opacity: 0; }
+}
+@keyframes shatterFall8 {
+    0%   { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+    100% { transform: translate(80px, 360px) rotate(-50deg); opacity: 0; }
+}
+@keyframes shatterFall9 {
+    0%   { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+    100% { transform: translate(35px, 410px) rotate(80deg); opacity: 0; }
+}
+@keyframes shatterFall10 {
+    0%   { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+    100% { transform: translate(100px, 380px) rotate(-60deg); opacity: 0; }
+}
+@keyframes shatterFall11 {
+    0%   { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+    100% { transform: translate(130px, 430px) rotate(90deg); opacity: 0; }
+}
+
+.shatter-fall-1  { animation: shatterFall1  0.7s cubic-bezier(0.55, 0, 1, 0.45) forwards !important; }
+.shatter-fall-2  { animation: shatterFall2  0.7s cubic-bezier(0.55, 0, 1, 0.45) 0.03s forwards !important; }
+.shatter-fall-3  { animation: shatterFall3  0.7s cubic-bezier(0.55, 0, 1, 0.45) 0.06s forwards !important; }
+.shatter-fall-4  { animation: shatterFall4  0.7s cubic-bezier(0.55, 0, 1, 0.45) 0.02s forwards !important; }
+.shatter-fall-5  { animation: shatterFall5  0.7s cubic-bezier(0.55, 0, 1, 0.45) 0.08s forwards !important; }
+.shatter-fall-6  { animation: shatterFall6  0.7s cubic-bezier(0.55, 0, 1, 0.45) 0.05s forwards !important; }
+.shatter-fall-7  { animation: shatterFall7  0.7s cubic-bezier(0.55, 0, 1, 0.45) 0.04s forwards !important; }
+.shatter-fall-8  { animation: shatterFall8  0.7s cubic-bezier(0.55, 0, 1, 0.45) 0.07s forwards !important; }
+.shatter-fall-9  { animation: shatterFall9  0.7s cubic-bezier(0.55, 0, 1, 0.45) 0.01s forwards !important; }
+.shatter-fall-10 { animation: shatterFall10 0.7s cubic-bezier(0.55, 0, 1, 0.45) 0.09s forwards !important; }
+.shatter-fall-11 { animation: shatterFall11 0.7s cubic-bezier(0.55, 0, 1, 0.45) 0.06s forwards !important; }
