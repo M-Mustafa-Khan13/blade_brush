@@ -58,6 +58,7 @@ LOCATIONS = [
         "badge": "Now Open",
         "badge_color": "green",
         "maps_url": "https://maps.google.com/?q=285+King+St+W+Kitchener+ON",
+        "image_url": "images/locations/kitchener.webp",
     },
     {
         "city": "London",
@@ -65,6 +66,7 @@ LOCATIONS = [
         "badge": "Popular",
         "badge_color": "red",
         "maps_url": "https://maps.google.com/?q=186+Dundas+St+London+ON",
+        "image_url": "images/locations/london.webp",
     },
     {
         "city": "Guelph",
@@ -72,6 +74,7 @@ LOCATIONS = [
         "badge": "Premium Location",
         "badge_color": "amber",
         "maps_url": "https://maps.google.com/?q=42+Wyndham+St+N+Guelph+ON",
+        "image_url": "images/locations/guelph.webp",
     },
     {
         "city": "Mississauga",
@@ -79,6 +82,7 @@ LOCATIONS = [
         "badge": "Now Open",
         "badge_color": "green",
         "maps_url": "https://maps.google.com/?q=100+City+Centre+Dr+Mississauga+ON",
+        "image_url": "images/locations/mississauga.jpg",
     },
 ]
 
