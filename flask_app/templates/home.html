@@ -221,38 +221,172 @@
 
 
 <!-- ============================================================= -->
-<!-- LOCATION TEASER                                               -->
+<!-- MULTI-CITY LOCATIONS GRID                                     -->
 <!-- ============================================================= -->
 <section class="py-24 bg-barber-card border-y border-barber-border">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-col md:flex-row items-center gap-12">
-            <!-- Map placeholder -->
-            <div class="flex-1 w-full">
-                <div class="aspect-video rounded-xl bg-barber-muted border border-barber-border flex items-center justify-center overflow-hidden">
-                    <div class="text-center">
-                        <svg class="w-16 h-16 mx-auto text-barber-red/15 mb-3" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
-                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
-                            <circle cx="12" cy="10" r="3"/>
-                        </svg>
-                        <p class="text-barber-cream/25 text-sm">Interactive map coming soon</p>
+        <!-- Header -->
+        <div class="text-center mb-16">
+            <span class="text-barber-red text-xs font-semibold uppercase tracking-[0.3em]">Our Locations</span>
+            <h2 class="font-display text-3xl sm:text-4xl font-bold mt-3">Find a Blade & Brush Near You</h2>
+            <p class="mt-4 text-barber-cream/40 max-w-xl mx-auto">Select your city to view directions and details.</p>
+            <div class="razor-divider w-24 mx-auto mt-6"></div>
+        </div>
+
+        <!-- Location Cards Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {% for loc in locations %}
+            <div class="location-card group card-lift rounded-xl overflow-hidden border border-barber-border hover:border-barber-red/30 transition-all duration-500">
+                <!-- Image area with gradient overlay -->
+                <div class="relative h-48 bg-barber-muted overflow-hidden">
+                    <!-- Placeholder pattern (barbershop aesthetic) -->
+                    <div class="absolute inset-0 bg-gradient-to-br from-barber-dark via-barber-muted to-barber-dark">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <svg class="w-20 h-20 text-barber-red/10 group-hover:text-barber-red/20 transition-colors duration-500" fill="none" stroke="currentColor" stroke-width="0.8" viewBox="0 0 24 24">
+                                <circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/>
+                                <line x1="20" y1="4" x2="8.12" y2="15.88"/>
+                                <line x1="14.47" y1="14.48" x2="20" y2="20"/>
+                                <line x1="8.12" y1="8.12" x2="12" y2="12"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <!-- Gradient overlay -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-barber-dark via-transparent to-transparent"></div>
+                    <!-- Badge -->
+                    <div class="absolute top-3 right-3 z-10">
+                        <span class="px-3 py-1 rounded-full text-xs font-semibold tracking-wide
+                            {% if loc.badge_color == 'green' %}bg-green-500/20 text-green-400 border border-green-500/30
+                            {% elif loc.badge_color == 'red' %}bg-barber-red/20 text-barber-red border border-barber-red/30
+                            {% elif loc.badge_color == 'amber' %}bg-amber-500/20 text-amber-400 border border-amber-500/30
+                            {% endif %}">
+                            {{ loc.badge }}
+                        </span>
                     </div>
                 </div>
+
+                <!-- Card content -->
+                <div class="p-5 bg-barber-card">
+                    <div class="flex items-start gap-3 mb-4">
+                        <svg class="w-5 h-5 text-barber-red mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
+                        </svg>
+                        <div>
+                            <h3 class="font-display text-xl font-semibold">{{ loc.city }}</h3>
+                            <p class="text-sm text-barber-cream/40 mt-1 leading-relaxed">{{ loc.address }}</p>
+                        </div>
+                    </div>
+                    <a href="{{ loc.maps_url }}" target="_blank" rel="noopener noreferrer"
+                       class="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg border border-barber-red/30 text-barber-red text-sm font-medium hover:bg-barber-red/10 transition-all duration-300">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        Open in Maps
+                    </a>
+                </div>
+
+                <!-- Red glow on hover -->
+                <div class="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" style="box-shadow: inset 0 0 30px rgba(220,38,38,0.06);"></div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+
+<!-- ============================================================= -->
+<!-- LEAVE A REVIEW                                                -->
+<!-- ============================================================= -->
+<section id="review" class="py-24 razor-lines" x-data="reviewSection()">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <span class="text-barber-red text-xs font-semibold uppercase tracking-[0.3em]">Feedback</span>
+            <h2 class="font-display text-3xl sm:text-4xl font-bold mt-3">Leave a Review</h2>
+            <p class="mt-4 text-barber-cream/40">Your feedback helps us stay sharp.</p>
+            <div class="razor-divider w-24 mx-auto mt-6"></div>
+        </div>
+
+        <!-- Flash messages for review -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        {% if message == "Thanks for your review!" %}
+        <div class="mb-8 flex items-center justify-center gap-3 px-6 py-4 rounded-xl bg-green-500/10 border border-green-500/20">
+            <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            <span class="text-green-400 font-medium">Thanks for your review!</span>
+        </div>
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <!-- Review Form -->
+        <div class="glass-card rounded-2xl border border-barber-border p-8 sm:p-10">
+            <!-- Inline success message -->
+            <div x-show="submitted" x-cloak
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0 scale-95"
+                 x-transition:enter-end="opacity-100 scale-100"
+                 class="text-center py-8">
+                <div class="mx-auto w-16 h-16 rounded-full bg-green-500/10 border-2 border-green-500/30 flex items-center justify-center mb-6">
+                    <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                    </svg>
+                </div>
+                <p class="font-display text-2xl font-semibold mb-2">Thanks for your review!</p>
+                <p class="text-barber-cream/40">We appreciate your feedback.</p>
             </div>
 
-            <!-- Info -->
-            <div class="flex-1 text-center md:text-left">
-                <span class="text-barber-red text-xs font-semibold uppercase tracking-[0.3em]">Find Us</span>
-                <h2 class="font-display text-3xl sm:text-4xl font-bold mt-3 mb-6">Visit Our Shop</h2>
-                <address class="not-italic text-barber-cream/40 text-sm leading-relaxed mb-8">
-                    <p>123 Barber Lane, Suite 4</p>
-                    <p>Downtown District</p>
-                    <p>New York, NY 10001</p>
-                </address>
-                <a href="{{ url_for('location') }}" class="btn-primary">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                    Open Map
-                </a>
-            </div>
+            <!-- Form -->
+            <form x-show="!submitted" method="POST" action="{{ url_for('submit_review') }}" @submit.prevent="submitReview($event)">
+                <!-- Name -->
+                <div class="mb-6">
+                    <label class="block text-sm text-barber-cream/60 mb-2">Your Name</label>
+                    <div class="relative">
+                        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-barber-cream/25" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        <input type="text" name="name" required placeholder="Your name"
+                               class="form-input pl-11" x-model="name">
+                    </div>
+                </div>
+
+                <!-- Star Rating -->
+                <div class="mb-6">
+                    <label class="block text-sm text-barber-cream/60 mb-3">Rating</label>
+                    <div class="flex items-center gap-1">
+                        <template x-for="star in 5" :key="star">
+                            <button type="button"
+                                    @click="rating = star"
+                                    @mouseenter="hoverRating = star"
+                                    @mouseleave="hoverRating = 0"
+                                    class="p-1 transition-transform duration-150 hover:scale-110">
+                                <svg class="w-8 h-8 transition-colors duration-150"
+                                     :class="(hoverRating || rating) >= star ? 'text-amber-400' : 'text-barber-border'"
+                                     fill="currentColor" viewBox="0 0 24 24">
+                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                                </svg>
+                            </button>
+                        </template>
+                        <span class="ml-3 text-sm text-barber-cream/30" x-text="rating ? rating + '/5' : 'Select'"></span>
+                    </div>
+                    <input type="hidden" name="rating" :value="rating">
+                </div>
+
+                <!-- Review Text -->
+                <div class="mb-8">
+                    <label class="block text-sm text-barber-cream/60 mb-2">Your Review</label>
+                    <textarea name="review" rows="4" required
+                              placeholder="Tell us about your experience..."
+                              class="form-input resize-none" x-model="review"></textarea>
+                </div>
+
+                <!-- Submit -->
+                <button type="submit" class="btn-primary text-base px-8 py-3 w-full sm:w-auto"
+                        :disabled="!name || !rating || !review"
+                        :class="(!name || !rating || !review) && 'opacity-50 cursor-not-allowed'">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                    </svg>
+                    Submit Review
+                </button>
+            </form>
         </div>
     </div>
 </section>
@@ -302,6 +436,20 @@ function heroSlider() {
             document.querySelectorAll('.hero-slide video').forEach(v => {
                 v.muted = !this.soundOn;
             });
+        }
+    };
+}
+
+function reviewSection() {
+    return {
+        name: '',
+        rating: 0,
+        hoverRating: 0,
+        review: '',
+        submitted: false,
+        submitReview(event) {
+            if (!this.name || !this.rating || !this.review) return;
+            this.submitted = true;
         }
     };
 }
