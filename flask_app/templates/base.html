@@ -162,11 +162,16 @@
                         {{ label }}
                     </a>
                     {% endfor %}
+                    <!-- Review link scrolls to #review on home page -->
+                    <a href="{{ url_for('home') }}#review"
+                       class="nav-link relative px-4 py-2 text-sm font-medium text-barber-cream/70 hover:text-barber-red transition-colors duration-300">
+                        Review
+                    </a>
                 </div>
 
                 <!-- CTA + hamburger -->
                 <div class="flex items-center gap-4">
-                    <a href="{{ url_for('barber_register') }}"
+                    <a href="{{ url_for('register_barber') }}"
                        class="hidden sm:inline-flex btn-primary text-sm">
                         Register as a Barber
                     </a>
@@ -194,7 +199,8 @@
                 <a href="{{ url_for('about') }}" class="block px-4 py-3 rounded-lg text-barber-cream/80 hover:bg-barber-muted hover:text-barber-red transition-colors">About Us</a>
                 <a href="{{ url_for('booking') }}" class="block px-4 py-3 rounded-lg text-barber-cream/80 hover:bg-barber-muted hover:text-barber-red transition-colors">Booking</a>
                 <a href="{{ url_for('location') }}" class="block px-4 py-3 rounded-lg text-barber-cream/80 hover:bg-barber-muted hover:text-barber-red transition-colors">Location</a>
-                <a href="{{ url_for('barber_register') }}" class="block px-4 py-3 rounded-lg text-barber-red font-semibold hover:bg-barber-muted transition-colors sm:hidden">Register as a Barber</a>
+                <a href="{{ url_for('home') }}#review" class="block px-4 py-3 rounded-lg text-barber-cream/80 hover:bg-barber-muted hover:text-barber-red transition-colors">Review</a>
+                <a href="{{ url_for('register_barber') }}" class="block px-4 py-3 rounded-lg text-barber-red font-semibold hover:bg-barber-muted transition-colors sm:hidden">Register as a Barber</a>
             </div>
         </div>
     </nav>
