@@ -237,21 +237,12 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {% for loc in locations %}
             <div class="location-card group card-lift rounded-xl overflow-hidden border border-barber-border hover:border-barber-red/30 transition-all duration-500">
-                <!-- Image area with gradient overlay -->
                 <div class="relative h-48 bg-barber-muted overflow-hidden">
-                    <!-- Placeholder pattern (barbershop aesthetic) -->
-                    <div class="absolute inset-0 bg-gradient-to-br from-barber-dark via-barber-muted to-barber-dark">
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <svg class="w-20 h-20 text-barber-red/10 group-hover:text-barber-red/20 transition-colors duration-500" fill="none" stroke="currentColor" stroke-width="0.8" viewBox="0 0 24 24">
-                                <circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/>
-                                <line x1="20" y1="4" x2="8.12" y2="15.88"/>
-                                <line x1="14.47" y1="14.48" x2="20" y2="20"/>
-                                <line x1="8.12" y1="8.12" x2="12" y2="12"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <!-- Gradient overlay -->
-                    <div class="absolute inset-0 bg-gradient-to-t from-barber-dark via-transparent to-transparent"></div>
+                    <img src="{{ url_for('static', filename=loc.image_url) }}"
+                         alt="{{ loc.city }} location"
+                         class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                         loading="lazy">
+                    <div class="absolute inset-0 bg-gradient-to-t from-barber-dark/90 via-barber-dark/20 to-transparent"></div>
                     <!-- Badge -->
                     <div class="absolute top-3 right-3 z-10">
                         <span class="px-3 py-1 rounded-full text-xs font-semibold tracking-wide
@@ -369,6 +360,23 @@
                     <input type="hidden" name="rating" :value="rating">
                 </div>
 
+                <!-- Google-style Tags -->
+                <div class="mb-6">
+                    <label class="block text-sm text-barber-cream/60 mb-3">What stood out?</label>
+                    <div class="flex flex-wrap gap-2">
+                        <template x-for="tag in tags" :key="tag">
+                            <button type="button" @click="toggleTag(tag)"
+                                    class="px-4 py-2 rounded-full text-sm font-medium border transition-all duration-200"
+                                    :class="selectedTags.includes(tag)
+                                        ? 'bg-barber-red/20 border-barber-red/50 text-barber-red'
+                                        : 'bg-barber-card border-barber-border text-barber-cream/50 hover:border-barber-cream/30 hover:text-barber-cream/70'"
+                                    x-text="tag">
+                            </button>
+                        </template>
+                    </div>
+                    <input type="hidden" name="tags" :value="selectedTags.join(',')">
+                </div>
+
                 <!-- Review Text -->
                 <div class="mb-8">
                     <label class="block text-sm text-barber-cream/60 mb-2">Your Review</label>
@@ -447,6 +455,13 @@ function reviewSection() {
         hoverRating: 0,
         review: '',
         submitted: false,
+        tags: ['Haircut', 'Beard Trim', 'Service', 'Ambiance', 'Staff', 'Cleanliness', 'Value', 'Environment', 'Wait Time', 'Styling'],
+        selectedTags: [],
+        toggleTag(tag) {
+            const idx = this.selectedTags.indexOf(tag);
+            if (idx === -1) this.selectedTags.push(tag);
+            else this.selectedTags.splice(idx, 1);
+        },
         submitReview(event) {
             if (!this.name || !this.rating || !this.review) return;
             this.submitted = true;
