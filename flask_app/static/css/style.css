@@ -488,3 +488,77 @@ div[x-show="cutting"] .shatter-letter:nth-child(11) { animation-delay: 1.10s; }
 .shatter-fall-9  { animation: shatterFall9  0.7s cubic-bezier(0.55, 0, 1, 0.45) 0.01s forwards !important; }
 .shatter-fall-10 { animation: shatterFall10 0.7s cubic-bezier(0.55, 0, 1, 0.45) 0.09s forwards !important; }
 .shatter-fall-11 { animation: shatterFall11 0.7s cubic-bezier(0.55, 0, 1, 0.45) 0.06s forwards !important; }
+
+/* ================================================================
+   GLASS CARD — frosted dark glass container
+   ================================================================ */
+.glass-card {
+    background: linear-gradient(135deg, rgba(17, 17, 17, 0.9), rgba(10, 10, 10, 0.95));
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+/* ================================================================
+   FORM INPUTS
+   ================================================================ */
+.form-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: rgba(22, 22, 22, 0.8);
+    border: 1px solid #222;
+    border-radius: 0.5rem;
+    color: #f0eded;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+    outline: none;
+}
+.form-input::placeholder {
+    color: rgba(240, 237, 237, 0.2);
+}
+.form-input:focus {
+    border-color: #dc2626;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1), 0 0 20px rgba(220, 38, 38, 0.05);
+}
+.form-input:hover:not(:focus) {
+    border-color: rgba(240, 237, 237, 0.15);
+}
+
+/* ================================================================
+   FILE UPLOAD AREA
+   ================================================================ */
+.file-upload-area {
+    padding: 1.5rem;
+    border: 2px dashed #222;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: rgba(22, 22, 22, 0.4);
+}
+.file-upload-area:hover {
+    border-color: rgba(220, 38, 38, 0.4);
+    background: rgba(220, 38, 38, 0.03);
+}
+
+/* ================================================================
+   SPECIALTY TAG (checkbox label)
+   ================================================================ */
+.specialty-tag input:checked + div {
+    border-color: #dc2626;
+    background: rgba(220, 38, 38, 0.1);
+    color: #dc2626;
+}
+.specialty-tag input:checked + div svg {
+    opacity: 1;
+}
+
+/* ================================================================
+   LOCATION CARD
+   ================================================================ */
+.location-card {
+    position: relative;
+    background: #111111;
+    transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+}
+.location-card:hover {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(220, 38, 38, 0.08);
+}
