@@ -1,0 +1,309 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+<!-- ============================================================= -->
+<!-- HERO VIDEO SLIDER                                             -->
+<!-- ============================================================= -->
+<section x-data="heroSlider()" x-init="init()" class="relative h-screen min-h-[600px] max-h-[900px] overflow-hidden">
+
+    <!-- Slides -->
+    <template x-for="(slide, i) in slides" :key="i">
+        <div class="hero-slide" :class="current === i ? 'opacity-100 z-10' : 'opacity-0 z-0'">
+            <!-- Video element -->
+            <video :src="slide.src"
+                   muted loop playsinline preload="auto"
+                   @error="slide.failed = true"
+                   @loadeddata="slide.failed = false"
+                   x-effect="
+                       if (current === i && !slide.failed) {
+                           $el.play?.().catch(() => {});
+                       } else {
+                           $el.pause?.();
+                       }
+                   "
+                   class="w-full h-full object-cover"
+                   x-show="!slide.failed">
+            </video>
+            <!-- Fallback when no video -->
+            <div x-show="slide.failed" class="hero-fallback w-full h-full flex items-center justify-center">
+                <div class="text-center">
+                    <svg class="w-24 h-24 mx-auto text-barber-red/15 mb-4" :style="'animation: spin 20s linear infinite; animation-delay:' + (i * 2) + 's'" fill="none" stroke="currentColor" stroke-width="0.5" viewBox="0 0 24 24">
+                        <circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/>
+                        <line x1="20" y1="4" x2="8.12" y2="15.88"/>
+                        <line x1="14.47" y1="14.48" x2="20" y2="20"/>
+                        <line x1="8.12" y1="8.12" x2="12" y2="12"/>
+                    </svg>
+                    <p class="text-barber-cream/10 text-xs tracking-widest uppercase" x-text="slide.label"></p>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Dark overlay gradient -->
+    <div class="hero-overlay absolute inset-0 z-20"></div>
+
+    <!-- Subtle red vignette -->
+    <div class="absolute inset-0 z-20 pointer-events-none" style="box-shadow: inset 0 0 200px rgba(220,38,38,0.06);"></div>
+
+    <!-- Hero Content -->
+    <div class="relative z-30 h-full flex flex-col items-center justify-center text-center px-4 hero-content">
+        <!-- Decorative line -->
+        <div class="flex items-center gap-3 mb-6">
+            <span class="block w-10 h-px bg-barber-red/50"></span>
+            <span class="text-barber-red/80 text-xs font-semibold uppercase tracking-[0.3em]">Est. 2024</span>
+            <span class="block w-10 h-px bg-barber-red/50"></span>
+        </div>
+
+        <h1 class="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight max-w-4xl">
+            Sharp Cuts. <span class="text-barber-red">Clean Lines.</span><br>
+            Pure Confidence.
+        </h1>
+
+        <p class="mt-6 max-w-xl leading-relaxed text-base sm:text-lg">
+            <span class="font-display italic text-barber-cream/70 text-lg sm:text-xl">Where precision meets elegance</span>
+            <span class="block mt-3 font-display text-xl sm:text-3xl font-semibold text-barber-cream/60 tracking-wide leading-snug">Your next sharp look is just one booking away.</span>
+        </p>
+
+        <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
+            <a href="{{ url_for('booking') }}" class="btn-primary text-base px-8 py-3 pulse-glow">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                Book Now
+            </a>
+            <a href="{{ url_for('about') }}" class="btn-outline text-base px-8 py-3">
+                We as a Team
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+            </a>
+        </div>
+    </div>
+
+    <!-- Slider Controls -->
+    <div class="absolute bottom-8 inset-x-0 z-30 flex items-center justify-center gap-6">
+        <!-- Prev -->
+        <button @click="prev()" class="w-10 h-10 rounded-full border border-barber-cream/20 flex items-center justify-center text-barber-cream/50 hover:border-barber-red hover:text-barber-red transition-all">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+        </button>
+
+        <!-- Dots -->
+        <div class="flex gap-2">
+            <template x-for="(slide, i) in slides" :key="'dot-'+i">
+                <button @click="goTo(i)"
+                        class="w-2.5 h-2.5 rounded-full bg-barber-cream/30 transition-all duration-300"
+                        :class="current === i && 'dot-active'">
+                </button>
+            </template>
+        </div>
+
+        <!-- Next -->
+        <button @click="next()" class="w-10 h-10 rounded-full border border-barber-cream/20 flex items-center justify-center text-barber-cream/50 hover:border-barber-red hover:text-barber-red transition-all">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        </button>
+
+        <!-- Sound Toggle -->
+        <button @click="toggleSound()" class="w-10 h-10 rounded-full border border-barber-cream/20 flex items-center justify-center text-barber-cream/50 hover:border-barber-red hover:text-barber-red transition-all"
+                :title="soundOn ? 'Mute' : 'Unmute'">
+            <!-- Speaker On icon -->
+            <svg x-show="soundOn" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                <path d="M15.54 8.46a5 5 0 010 7.07"/>
+                <path d="M19.07 4.93a10 10 0 010 14.14"/>
+            </svg>
+            <!-- Speaker Off icon -->
+            <svg x-show="!soundOn" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                <line x1="23" y1="9" x2="17" y2="15"/>
+                <line x1="17" y1="9" x2="23" y2="15"/>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Slide counter -->
+    <div class="absolute top-24 right-6 z-30 text-barber-cream/20 text-xs font-mono">
+        <span x-text="(current + 1)"></span> / <span x-text="slides.length"></span>
+    </div>
+</section>
+
+
+<!-- ============================================================= -->
+<!-- SERVICES PREVIEW CARDS                                        -->
+<!-- ============================================================= -->
+<section class="relative py-24 razor-lines scissors-bg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="text-center mb-16">
+            <span class="text-barber-red text-xs font-semibold uppercase tracking-[0.3em]">What We Offer</span>
+            <h2 class="font-display text-3xl sm:text-4xl font-bold mt-3">Our Services</h2>
+            <div class="razor-divider w-24 mx-auto mt-6"></div>
+        </div>
+
+        <!-- Cards Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {% for card in cards %}
+            <div class="card-lift snip-shimmer bg-barber-card border border-barber-border rounded-xl p-8 text-center group">
+                <!-- Icon -->
+                <div class="mx-auto w-16 h-16 rounded-full bg-barber-muted flex items-center justify-center mb-6 group-hover:bg-barber-red/10 transition-colors duration-300">
+                    {% if card.icon == 'scissors' %}
+                    <svg class="w-7 h-7 text-barber-red" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>
+                    {% elif card.icon == 'razor' %}
+                    <svg class="w-7 h-7 text-barber-red" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M7 3h10l4 4v5a2 2 0 01-2 2H5a2 2 0 01-2-2V7l4-4z"/><line x1="12" y1="14" x2="12" y2="21"/></svg>
+                    {% elif card.icon == 'comb' %}
+                    <svg class="w-7 h-7 text-barber-red" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="4" rx="1"/><line x1="5" y1="10" x2="5" y2="18"/><line x1="8" y1="10" x2="8" y2="18"/><line x1="11" y1="10" x2="11" y2="18"/><line x1="14" y1="10" x2="14" y2="18"/><line x1="17" y1="10" x2="17" y2="18"/><line x1="20" y1="10" x2="20" y2="18"/></svg>
+                    {% elif card.icon == 'spray' %}
+                    <svg class="w-7 h-7 text-barber-red" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M8 2h4v4H8z"/><path d="M6 6h8v3a1 1 0 01-1 1H7a1 1 0 01-1-1V6z"/><path d="M7 10h6v11a1 1 0 01-1 1H8a1 1 0 01-1-1V10z"/><path d="M4 4h2"/><line x1="10" y1="2" x2="14" y2="2"/></svg>
+                    {% endif %}
+                </div>
+                <h3 class="font-display text-xl font-semibold mb-3">{{ card.name }}</h3>
+                <p class="text-sm text-barber-cream/40 leading-relaxed mb-5">{{ card.desc }}</p>
+                <a href="#" class="text-barber-red text-sm font-medium hover:text-barber-red-glow transition-colors inline-flex items-center gap-1">
+                    Learn more
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+
+<!-- ============================================================= -->
+<!-- WHY US / TRUST SECTION                                        -->
+<!-- ============================================================= -->
+<section class="py-24 razor-lines">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="text-center mb-16">
+            <span class="text-barber-red text-xs font-semibold uppercase tracking-[0.3em]">Why Choose Us</span>
+            <h2 class="font-display text-3xl sm:text-4xl font-bold mt-3">The Blade & Brush Difference</h2>
+            <div class="razor-divider w-24 mx-auto mt-6"></div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Feature 1 -->
+            <div class="text-center px-6">
+                <div class="mx-auto w-16 h-16 rounded-full bg-barber-card border border-barber-border flex items-center justify-center mb-6">
+                    <svg class="w-7 h-7 text-barber-red" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                        <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                        <circle cx="9" cy="7" r="4"/>
+                        <path d="M23 21v-2a4 4 0 00-3-3.87"/>
+                        <path d="M16 3.13a4 4 0 010 7.75"/>
+                    </svg>
+                </div>
+                <h3 class="font-display text-xl font-semibold mb-3">Experienced Barbers</h3>
+                <p class="text-sm text-barber-cream/40 leading-relaxed">Our team brings decades of combined skill. Every cut is crafted with precision by hands that know the craft inside out.</p>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="text-center px-6">
+                <div class="mx-auto w-16 h-16 rounded-full bg-barber-card border border-barber-border flex items-center justify-center mb-6">
+                    <svg class="w-7 h-7 text-barber-red" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                </div>
+                <h3 class="font-display text-xl font-semibold mb-3">Hygienic Tools</h3>
+                <p class="text-sm text-barber-cream/40 leading-relaxed">Every blade sterilized, every tool sanitized. We maintain hospital-grade hygiene standards because your safety comes first.</p>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="text-center px-6">
+                <div class="mx-auto w-16 h-16 rounded-full bg-barber-card border border-barber-border flex items-center justify-center mb-6">
+                    <svg class="w-7 h-7 text-barber-red" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                    </svg>
+                </div>
+                <h3 class="font-display text-xl font-semibold mb-3">Premium Products</h3>
+                <p class="text-sm text-barber-cream/40 leading-relaxed">Only the finest oils, pomades, and skincare. We partner with top grooming brands so your finish is always flawless.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ============================================================= -->
+<!-- LOCATION TEASER                                               -->
+<!-- ============================================================= -->
+<section class="py-24 bg-barber-card border-y border-barber-border">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row items-center gap-12">
+            <!-- Map placeholder -->
+            <div class="flex-1 w-full">
+                <div class="aspect-video rounded-xl bg-barber-muted border border-barber-border flex items-center justify-center overflow-hidden">
+                    <div class="text-center">
+                        <svg class="w-16 h-16 mx-auto text-barber-red/15 mb-3" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+                            <circle cx="12" cy="10" r="3"/>
+                        </svg>
+                        <p class="text-barber-cream/25 text-sm">Interactive map coming soon</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info -->
+            <div class="flex-1 text-center md:text-left">
+                <span class="text-barber-red text-xs font-semibold uppercase tracking-[0.3em]">Find Us</span>
+                <h2 class="font-display text-3xl sm:text-4xl font-bold mt-3 mb-6">Visit Our Shop</h2>
+                <address class="not-italic text-barber-cream/40 text-sm leading-relaxed mb-8">
+                    <p>123 Barber Lane, Suite 4</p>
+                    <p>Downtown District</p>
+                    <p>New York, NY 10001</p>
+                </address>
+                <a href="{{ url_for('location') }}" class="btn-primary">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    Open Map
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ============================================================= -->
+<!-- DECORATIVE BARBER POLE STRIP                                  -->
+<!-- ============================================================= -->
+<div class="barber-pole-stripe h-2" aria-hidden="true"></div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+function heroSlider() {
+    return {
+        current: 0,
+        soundOn: false,
+        slides: [
+            {
+                src: "{{ url_for('static', filename='videos/hero1.mp4') }}",
+                failed: false,
+                label: "Cinematic Barbershop"
+            },
+            {
+                src: "{{ url_for('static', filename='videos/hero2.mp4') }}",
+                failed: false,
+                label: "B-Roll Barbershop"
+            },
+        ],
+        init() {
+            // Videos start optimistically (failed: false).
+            // The <video> elements handle @error and @loadeddata directly.
+            // No extra preload needed — plays immediately.
+        },
+        next() {
+            this.current = (this.current + 1) % this.slides.length;
+        },
+        prev() {
+            this.current = (this.current - 1 + this.slides.length) % this.slides.length;
+        },
+        goTo(i) {
+            this.current = i;
+        },
+        toggleSound() {
+            this.soundOn = !this.soundOn;
+            document.querySelectorAll('.hero-slide video').forEach(v => {
+                v.muted = !this.soundOn;
+            });
+        }
+    };
+}
+</script>
+{% endblock %}
