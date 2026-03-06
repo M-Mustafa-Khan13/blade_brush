@@ -163,6 +163,19 @@
             </div>
             {% endfor %}
         </div>
+
+        <!-- Explore More CTA -->
+        <div class="text-center mt-12">
+            <a href="{{ url_for('services') }}" class="btn-primary text-sm px-8 py-3">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/>
+                    <line x1="20" y1="4" x2="8.12" y2="15.88"/>
+                    <line x1="14.47" y1="14.48" x2="20" y2="20"/>
+                    <line x1="8.12" y1="8.12" x2="12" y2="12"/>
+                </svg>
+                Explore All Services
+            </a>
+        </div>
     </div>
 </section>
 
@@ -327,7 +340,7 @@
             </div>
 
             <!-- Form -->
-            <form x-show="!submitted" method="POST" action="{{ url_for('submit_review') }}" @submit.prevent="submitReview($event)">
+            <form x-show="!submitted" method="POST" action="{{ url_for('submit_review') }}">
                 <!-- Name -->
                 <div class="mb-6">
                     <label class="block text-sm text-barber-cream/60 mb-2">Your Name</label>
@@ -385,14 +398,27 @@
                               class="form-input resize-none" x-model="review"></textarea>
                 </div>
 
+                <!-- Error message -->
+                <div x-show="error" x-cloak
+                     class="mb-6 flex items-center gap-2 px-4 py-3 rounded-lg bg-barber-red/10 border border-barber-red/30 text-barber-red text-sm">
+                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    <span x-text="error"></span>
+                </div>
+
                 <!-- Submit -->
                 <button type="submit" class="btn-primary text-base px-8 py-3 w-full sm:w-auto"
-                        :disabled="!name || !rating || !review"
-                        :class="(!name || !rating || !review) && 'opacity-50 cursor-not-allowed'">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        :disabled="!name || !rating || !review || loading"
+                        :class="(!name || !rating || !review || loading) && 'opacity-50 cursor-not-allowed'">
+                    <!-- Spinner when loading -->
+                    <svg x-show="loading" class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                    </svg>
+                    <!-- Send icon when idle -->
+                    <svg x-show="!loading" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
                     </svg>
-                    Submit Review
+                    <span x-text="loading ? 'Submitting…' : 'Submit Review'"></span>
                 </button>
             </form>
         </div>
@@ -455,6 +481,8 @@ function reviewSection() {
         hoverRating: 0,
         review: '',
         submitted: false,
+        loading: false,
+        error: '',
         tags: ['Haircut', 'Beard Trim', 'Service', 'Ambiance', 'Staff', 'Cleanliness', 'Value', 'Environment', 'Wait Time', 'Styling'],
         selectedTags: [],
         toggleTag(tag) {
@@ -462,9 +490,35 @@ function reviewSection() {
             if (idx === -1) this.selectedTags.push(tag);
             else this.selectedTags.splice(idx, 1);
         },
-        submitReview(event) {
-            if (!this.name || !this.rating || !this.review) return;
-            this.submitted = true;
+        async submitReview(event) {
+            if (!this.name || !this.rating || !this.review || this.loading) return;
+            this.loading = true;
+            this.error = '';
+            try {
+                const res = await fetch('/api/reviews', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name:    this.name,
+                        rating:  this.rating,
+                        tags:    this.selectedTags,
+                        message: this.review,
+                    }),
+                });
+                const data = await res.json();
+                if (!res.ok) {
+                    this.error = data.error || 'Something went wrong. Please try again.';
+                    return;
+                }
+                this.submitted = true;
+                window.dispatchEvent(new CustomEvent('show-toast', {
+                    detail: { message: 'Thanks for your review!' }
+                }));
+            } catch (e) {
+                this.error = 'Network error. Please check your connection and try again.';
+            } finally {
+                this.loading = false;
+            }
         }
     };
 }
