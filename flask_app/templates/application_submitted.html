@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Application Submitted — Blade & Brush{% endblock %}
+
+{% block content %}
+
+<!-- Spacer for fixed navbar -->
+<div class="h-24"></div>
+
+<section class="min-h-[80vh] flex items-center justify-center px-4 py-24">
+    <div class="max-w-lg w-full text-center">
+        <div class="glass-card rounded-2xl p-12 border border-barber-border">
+
+            <!-- Animated checkmark ring -->
+            <div class="mx-auto w-24 h-24 rounded-full bg-green-500/10 border-2 border-green-500/30
+                        flex items-center justify-center mb-8 pulse-glow">
+                <svg class="w-12 h-12 text-green-500" fill="none" stroke="currentColor"
+                     stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                </svg>
+            </div>
+
+            <!-- Heading -->
+            <span class="text-barber-red text-xs font-semibold uppercase tracking-[0.3em]">
+                Application Received
+            </span>
+            <h1 class="font-display text-3xl sm:text-4xl font-bold mt-3 mb-4">
+                You're on the list!
+            </h1>
+
+            <!-- Sub-copy -->
+            <p class="text-barber-cream/50 text-base leading-relaxed mb-2">
+                Your application has been submitted to the Blade & Brush team.
+            </p>
+            <p class="text-barber-cream/40 text-sm leading-relaxed mb-10">
+                We review every application carefully. You'll hear from us within
+                <span class="text-barber-cream/70 font-medium">3–5 business days</span>
+                at the email you provided.
+            </p>
+
+            <!-- What happens next -->
+            <div class="text-left space-y-4 mb-10 px-2">
+                <div class="flex items-start gap-4">
+                    <div class="mt-0.5 flex-shrink-0 w-7 h-7 rounded-full bg-barber-red/10 border border-barber-red/20
+                                flex items-center justify-center">
+                        <span class="text-barber-red text-xs font-bold">1</span>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-barber-cream/70">Application review</p>
+                        <p class="text-xs text-barber-cream/35 mt-0.5">Our team reviews your profile, specialties, and documents.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="mt-0.5 flex-shrink-0 w-7 h-7 rounded-full bg-barber-red/10 border border-barber-red/20
+                                flex items-center justify-center">
+                        <span class="text-barber-red text-xs font-bold">2</span>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-barber-cream/70">Interview & skills check</p>
+                        <p class="text-xs text-barber-cream/35 mt-0.5">Shortlisted candidates are invited to a brief in-person demo.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="mt-0.5 flex-shrink-0 w-7 h-7 rounded-full bg-barber-red/10 border border-barber-red/20
+                                flex items-center justify-center">
+                        <span class="text-barber-red text-xs font-bold">3</span>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-barber-cream/70">Welcome aboard</p>
+                        <p class="text-xs text-barber-cream/35 mt-0.5">Successful applicants receive onboarding details and chair assignment.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA -->
+            <a href="{{ url_for('home') }}" class="btn-primary text-sm px-8 py-3">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                </svg>
+                Back to Home
+            </a>
+
+        </div>
+    </div>
+</section>
+
+{% endblock %}
