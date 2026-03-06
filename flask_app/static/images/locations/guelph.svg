@@ -1,0 +1,27 @@
+<svg viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="sky3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0e1525"/><stop offset="100%" stop-color="#181520"/></linearGradient>
+  </defs>
+  <rect width="400" height="200" fill="url(#sky3)"/>
+  <circle cx="150" cy="22" r="1" fill="#fff" opacity="0.25"/><circle cx="320" cy="12" r="0.9" fill="#fff" opacity="0.2"/><circle cx="60" cy="30" r="0.7" fill="#fff" opacity="0.3"/>
+  <rect x="0" y="172" width="400" height="28" fill="#1a1a1a"/>
+  <rect x="70" y="55" width="260" height="118" fill="#161010" stroke="#2a1a14" stroke-width="1"/>
+  <path d="M60 55 L200 15 L340 55 Z" fill="#1a1210" stroke="#2a1a14" stroke-width="0.8"/>
+  <path d="M65 55 L200 18 L335 55 Z" fill="none" stroke="#dc2626" stroke-width="0.3" opacity="0.3"/>
+  <line x1="200" y1="18" x2="200" y2="55" stroke="#2a1a14" stroke-width="0.5"/>
+  <path d="M70 55 Q80 50 90 55 Q100 50 110 55 Q120 50 130 55 Q140 50 150 55 Q160 50 170 55 Q180 50 190 55 Q200 50 210 55 Q220 50 230 55 Q240 50 250 55 Q260 50 270 55 Q280 50 290 55 Q300 50 310 55 Q320 50 330 55" stroke="#dc2626" stroke-width="0.8" fill="none" opacity="0.3"/>
+  <rect x="120" y="62" width="160" height="28" rx="4" fill="#0a0808" stroke="#dc2626" stroke-width="1"/>
+  <path d="M124 66 L132 62 M124 86 L132 90 M276 66 L268 62 M276 86 L268 90" stroke="#dc2626" stroke-width="0.6" opacity="0.5"/>
+  <text x="200" y="78" text-anchor="middle" fill="#dc2626" font-size="10" font-weight="bold" font-family="Georgia, serif">BLADE &amp; BRUSH</text>
+  <text x="200" y="87" text-anchor="middle" fill="#f0eded" font-size="4.5" font-family="Georgia, serif" opacity="0.35">EST. 2024</text>
+  <path d="M100 100 L100 155 L140 155 L140 100 Q120 82 100 100 Z" fill="#0a0a14" stroke="#333" stroke-width="0.8"/>
+  <path d="M170 100 L170 155 L230 155 L230 100 Q200 78 170 100 Z" fill="#0a0a14" stroke="#333" stroke-width="0.8"/>
+  <path d="M260 100 L260 155 L300 155 L300 100 Q280 82 260 100 Z" fill="#0a0a14" stroke="#333" stroke-width="0.8"/>
+  <path d="M102 102 L102 153 L138 153 L138 102 Q120 84 102 102 Z" fill="#dc2626" opacity="0.03"/>
+  <path d="M172 102 L172 153 L228 153 L228 102 Q200 80 172 102 Z" fill="#dc2626" opacity="0.03"/>
+  <path d="M262 102 L262 153 L298 153 L298 102 Q280 84 262 102 Z" fill="#dc2626" opacity="0.03"/>
+  <circle cx="200" cy="138" r="1.5" fill="#dc2626" opacity="0.5"/>
+  <line x1="85" y1="55" x2="85" y2="95" stroke="#333" stroke-width="0.5"/>
+  <rect x="75" y="95" width="20" height="14" rx="2" fill="#111" stroke="#dc2626" stroke-width="0.5"/>
+  <text x="85" y="104" text-anchor="middle" fill="#dc2626" font-size="4" font-family="Georgia, serif">B&amp;B</text>
+</svg>
