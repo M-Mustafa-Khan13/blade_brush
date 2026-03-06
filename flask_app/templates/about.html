@@ -74,6 +74,247 @@
     </div>
 </section>
 
+<div class="razor-divider max-w-xl mx-auto"></div>
+
+<!-- ============================================================= -->
+<!-- CUSTOMER TESTIMONIALS                                         -->
+<!-- ============================================================= -->
+<section class="py-24 razor-lines" x-data="testimonials()" x-init="fetchReviews()">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <!-- Header -->
+        <div class="text-center mb-10">
+            <span class="text-barber-red text-xs font-semibold uppercase tracking-[0.3em]">Client Words</span>
+            <h2 class="font-display text-3xl sm:text-4xl font-bold mt-3">What Our Clients Say</h2>
+            <div class="razor-divider w-24 mx-auto mt-6"></div>
+        </div>
+
+        <!-- Controls: Sort + Tag filter -->
+        <div class="flex flex-wrap items-center gap-3 mb-8">
+            <!-- Sort buttons -->
+            <div class="flex items-center gap-2">
+                <span class="text-xs text-barber-cream/35 uppercase tracking-widest">Sort</span>
+                <button @click="setSort('newest')"
+                        class="px-3 py-1.5 rounded-lg border text-xs font-medium transition-all duration-200"
+                        :class="sort === 'newest'
+                            ? 'bg-barber-red/20 border-barber-red/50 text-barber-red'
+                            : 'border-barber-border text-barber-cream/45 hover:border-barber-cream/30 hover:text-barber-cream/70'">
+                    Newest
+                </button>
+                <button @click="setSort('highest')"
+                        class="px-3 py-1.5 rounded-lg border text-xs font-medium transition-all duration-200"
+                        :class="sort === 'highest'
+                            ? 'bg-barber-red/20 border-barber-red/50 text-barber-red'
+                            : 'border-barber-border text-barber-cream/45 hover:border-barber-cream/30 hover:text-barber-cream/70'">
+                    Highest Rated
+                </button>
+            </div>
+
+            <div class="flex-1 hidden sm:block"></div>
+
+            <!-- Tag filter pills -->
+            <div class="flex flex-wrap gap-1.5">
+                <button @click="setTag(null)"
+                        class="px-2.5 py-1 rounded-full text-xs border transition-all duration-200"
+                        :class="!activeTag
+                            ? 'bg-barber-red/20 border-barber-red/50 text-barber-red'
+                            : 'border-barber-border text-barber-cream/40 hover:border-barber-cream/30'">
+                    All
+                </button>
+                <template x-for="tag in allTags" :key="tag">
+                    <button @click="setTag(tag)"
+                            class="px-2.5 py-1 rounded-full text-xs border transition-all duration-200"
+                            :class="activeTag === tag
+                                ? 'bg-barber-red/20 border-barber-red/50 text-barber-red'
+                                : 'border-barber-border text-barber-cream/40 hover:border-barber-cream/30'"
+                            x-text="tag">
+                    </button>
+                </template>
+            </div>
+        </div>
+
+        <!-- Loading spinner -->
+        <div x-show="loading" x-cloak class="flex justify-center py-20">
+            <div class="w-9 h-9 rounded-full border-2 border-barber-red/20 border-t-barber-red animate-spin"></div>
+        </div>
+
+        <!-- Fetch error -->
+        <div x-show="fetchError && !loading" x-cloak class="text-center py-16 text-barber-cream/35 text-sm" x-text="fetchError"></div>
+
+        <!-- Empty state -->
+        <div x-show="!loading && !fetchError && reviews.length === 0" x-cloak class="text-center py-16">
+            <p class="text-barber-cream/30 text-sm">No reviews yet. Be the first to share your experience!</p>
+            <a href="{{ url_for('home') }}#review"
+               class="mt-4 inline-block text-barber-red text-sm hover:text-barber-red-glow transition-colors">
+                Leave a review →
+            </a>
+        </div>
+
+        <!-- Review cards grid: 2-col desktop, 1-col mobile -->
+        <div x-show="!loading && reviews.length > 0" x-cloak
+             class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <template x-for="review in reviews" :key="review.id">
+                <div x-data="{ expanded: false }"
+                     class="bg-barber-card border border-barber-border rounded-xl p-5 flex flex-col gap-3
+                            hover:border-barber-red/20 transition-colors duration-300">
+
+                    <!-- Row 1: Avatar + name/date + stars -->
+                    <div class="flex items-start justify-between gap-2">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <!-- Initials avatar -->
+                            <div class="w-9 h-9 rounded-full bg-barber-red/10 border border-barber-red/20
+                                        flex items-center justify-center flex-shrink-0">
+                                <span class="text-barber-red text-sm font-semibold leading-none"
+                                      x-text="review.name.charAt(0).toUpperCase()"></span>
+                            </div>
+                            <div class="min-w-0">
+                                <p class="text-sm font-semibold text-barber-cream truncate" x-text="review.name"></p>
+                                <p class="text-xs text-barber-cream/30" x-text="timeAgo(review.created_at)"></p>
+                            </div>
+                        </div>
+                        <!-- Star rating -->
+                        <div class="flex items-center gap-0.5 flex-shrink-0 pt-0.5">
+                            <template x-for="s in 5" :key="s">
+                                <svg class="w-3.5 h-3.5"
+                                     :class="s <= review.rating ? 'text-amber-400' : 'text-barber-border'"
+                                     fill="currentColor" viewBox="0 0 24 24">
+                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                                </svg>
+                            </template>
+                        </div>
+                    </div>
+
+                    <!-- Row 2: Tag pills -->
+                    <div x-show="review.tags" class="flex flex-wrap gap-1.5">
+                        <template x-for="tag in review.tags.split(',').filter(t => t.trim())" :key="tag">
+                            <span class="px-2 py-0.5 rounded-full text-xs
+                                         bg-barber-muted border border-barber-border text-barber-cream/45"
+                                  x-text="tag.trim()"></span>
+                        </template>
+                    </div>
+
+                    <!-- Row 3: Review text + Read more -->
+                    <div>
+                        <p class="text-sm text-barber-cream/70 leading-relaxed"
+                           :class="!expanded && 'line-clamp-3'"
+                           x-text="review.message"></p>
+                        <button x-show="review.message.length > 140"
+                                @click="expanded = !expanded"
+                                class="mt-1.5 text-xs text-barber-red hover:text-barber-red-glow transition-colors"
+                                x-text="expanded ? 'Show less' : 'Read more'">
+                        </button>
+                    </div>
+                </div>
+            </template>
+        </div>
+
+        <!-- Load more button -->
+        <div x-show="!loading && hasMore" x-cloak class="mt-8 text-center">
+            <button @click="loadMore()"
+                    :disabled="loadingMore"
+                    class="btn-outline text-sm px-7 py-2.5"
+                    :class="loadingMore && 'opacity-60 cursor-not-allowed'">
+                <span x-show="!loadingMore">Load More</span>
+                <span x-show="loadingMore" class="flex items-center gap-2">
+                    <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                    </svg>
+                    Loading…
+                </span>
+            </button>
+        </div>
+
+    </div>
+</section>
+
 <div class="barber-pole-stripe h-2" aria-hidden="true"></div>
 
+{% endblock %}
+
+{% block scripts %}
+<script>
+function testimonials() {
+    return {
+        reviews:      [],
+        loading:      true,
+        loadingMore:  false,
+        fetchError:   '',
+        sort:         'newest',
+        activeTag:    null,
+        offset:       0,
+        limit:        6,
+        total:        0,
+        allTags: [
+            'Haircut','Beard Trim','Service','Ambiance','Staff',
+            'Cleanliness','Value','Environment','Wait Time','Styling'
+        ],
+
+        get hasMore() { return this.reviews.length < this.total; },
+
+        async fetchReviews(append = false) {
+            if (append) { this.loadingMore = true; }
+            else        { this.loading = true; this.fetchError = ''; }
+
+            try {
+                const p = new URLSearchParams({
+                    limit:  this.limit,
+                    offset: append ? this.offset : 0,
+                    sort:   this.sort,
+                });
+                if (this.activeTag) p.set('tag', this.activeTag);
+
+                const res = await fetch('/api/reviews?' + p.toString());
+                if (!res.ok) throw new Error('Request failed');
+
+                const data = await res.json();
+
+                if (append) {
+                    this.reviews = [...this.reviews, ...data.reviews];
+                } else {
+                    this.reviews = data.reviews;
+                }
+                this.offset = this.reviews.length;
+                this.total  = data.total;
+            } catch (e) {
+                this.fetchError = 'Could not load reviews. Please try again later.';
+            } finally {
+                this.loading     = false;
+                this.loadingMore = false;
+            }
+        },
+
+        async setSort(newSort) {
+            if (this.sort === newSort) return;
+            this.sort   = newSort;
+            this.offset = 0;
+            await this.fetchReviews(false);
+        },
+
+        async setTag(tag) {
+            if (this.activeTag === tag) return;
+            this.activeTag = tag;
+            this.offset    = 0;
+            await this.fetchReviews(false);
+        },
+
+        async loadMore() {
+            if (this.loadingMore) return;
+            await this.fetchReviews(true);
+        },
+
+        timeAgo(iso) {
+            /* iso is UTC from Python's datetime.isoformat() — append Z if missing */
+            const date = new Date(iso.endsWith('Z') ? iso : iso + 'Z');
+            const s    = Math.floor((Date.now() - date) / 1000);
+            if (s < 60)       return 'Just now';
+            if (s < 3600)     return Math.floor(s / 60)    + 'm ago';
+            if (s < 86400)    return Math.floor(s / 3600)  + 'h ago';
+            if (s < 2592000)  return Math.floor(s / 86400) + 'd ago';
+            if (s < 31536000) return Math.floor(s / 2592000) + 'mo ago';
+            return Math.floor(s / 31536000) + 'y ago';
+        },
+    };
+}
+</script>
 {% endblock %}
