@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% block title %}Our Locations{% endblock %}
+
+{% block content %}
+<div class="h-20"></div>
+
+<!-- ================================================================= -->
+<!-- HERO                                                               -->
+<!-- ================================================================= -->
+<section class="py-20 razor-lines text-center">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-center gap-3 mb-6">
+            <span class="block w-10 h-px bg-barber-red/50"></span>
+            <span class="text-barber-red/70 text-xs font-semibold uppercase tracking-[0.3em]">Find Us</span>
+            <span class="block w-10 h-px bg-barber-red/50"></span>
+        </div>
+        <h1 class="font-display text-4xl sm:text-5xl font-bold mb-6">Our Locations</h1>
+        <p class="text-barber-cream/50 text-lg leading-relaxed">
+            Four locations across Ontario — each one delivering the same premium Blade &amp; Brush experience.
+        </p>
+    </div>
+</section>
+
+<div class="razor-divider max-w-xl mx-auto"></div>
+
+<!-- ================================================================= -->
+<!-- LOCATIONS GRID                                                     -->
+<!-- ================================================================= -->
+<section class="py-20 px-4">
+    <div class="max-w-6xl mx-auto">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {% for loc in locations %}
+
+            {% set status_classes = {
+                'green': 'bg-green-500/10 border-green-500/30 text-green-400',
+                'red':   'bg-barber-red/10 border-barber-red/30 text-barber-red',
+                'amber': 'bg-amber-500/10 border-amber-500/30 text-amber-400',
+            } %}
+            {% set sc = status_classes.get(loc.status_color, status_classes['green']) %}
+
+            <div class="glass-card rounded-2xl border border-barber-border overflow-hidden
+                        hover:border-barber-red/30 transition-colors duration-300 flex flex-col group">
+
+                <!-- Image area -->
+                <div class="relative bg-barber-muted/60 aspect-video overflow-hidden">
+                    {% set img_path = 'static/' + loc.image %}
+                    <img src="{{ url_for('static', filename=loc.image) }}"
+                         alt="{{ loc.name }} barbershop"
+                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                         onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                    <!-- Fallback if image missing -->
+                    <div class="absolute inset-0 hidden items-center justify-center flex-col gap-3"
+                         style="background: linear-gradient(135deg, #111 0%, #161616 100%);">
+                        <svg class="w-12 h-12 text-barber-red/20" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
+                        </svg>
+                        <span class="text-xs text-barber-cream/20 uppercase tracking-widest">Blade &amp; Brush</span>
+                    </div>
+
+                    <!-- Status badge -->
+                    <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full
+                                 text-xs font-semibold border backdrop-blur-sm {{ sc }}">
+                        {% if loc.status_color == 'green' %}
+                        <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
+                        {% elif loc.status_color == 'red' %}
+                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                        {% else %}
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                        {% endif %}
+                        {{ loc.status }}
+                    </span>
+                </div>
+
+                <!-- Content -->
+                <div class="flex flex-col flex-1 p-6">
+                    <h2 class="font-display text-2xl font-bold text-barber-cream mb-3
+                               group-hover:text-barber-red transition-colors">
+                        {{ loc.name }}
+                    </h2>
+
+                    <!-- Address -->
+                    <div class="flex items-start gap-2.5 mb-6 flex-1">
+                        <svg class="w-4 h-4 text-barber-red flex-shrink-0 mt-0.5" fill="none"
+                             stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
+                        </svg>
+                        <p class="text-sm text-barber-cream/60 leading-relaxed">{{ loc.address }}</p>
+                    </div>
+
+                    <!-- Open in Maps button -->
+                    <a href="https://www.google.com/maps/search/?api=1&query={{ loc.maps_query }}"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="btn-primary text-sm justify-center">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
+                        </svg>
+                        Open in Maps
+                    </a>
+                </div>
+            </div>
+
+            {% endfor %}
+        </div>
+
+    </div>
+</section>
+
+<!-- ================================================================= -->
+<!-- BOOKING CTA                                                        -->
+<!-- ================================================================= -->
+<section class="pb-24 px-4">
+    <div class="max-w-4xl mx-auto">
+        <div class="glass-card rounded-2xl border border-barber-red/20 bg-barber-red/5
+                    p-8 sm:p-10 flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
+            <div class="flex-shrink-0 w-16 h-16 rounded-full bg-barber-red/10 border border-barber-red/20
+                        flex items-center justify-center">
+                <svg class="w-8 h-8 text-barber-red" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <rect x="3" y="4" width="18" height="18" rx="2"/>
+                    <line x1="16" y1="2" x2="16" y2="6"/>
+                    <line x1="8"  y1="2" x2="8"  y2="6"/>
+                    <line x1="3"  y1="10" x2="21" y2="10"/>
+                </svg>
+            </div>
+            <div class="flex-1">
+                <h3 class="font-display text-xl font-bold mb-2">Ready to Book?</h3>
+                <p class="text-barber-cream/50 text-sm leading-relaxed">
+                    Choose your preferred location and reserve your chair in minutes.
+                </p>
+            </div>
+            <a href="{{ url_for('booking') }}" class="flex-shrink-0 btn-primary text-sm">
+                Book an Appointment
+            </a>
+        </div>
+    </div>
+</section>
+
+<div class="barber-pole-stripe h-2" aria-hidden="true"></div>
+
+{% endblock %}
