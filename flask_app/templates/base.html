@@ -151,10 +151,12 @@
                 <!-- Desktop links -->
                 <div class="hidden md:flex items-center gap-1">
                     {% set nav_links = [
-                        ('home',    'Home'),
-                        ('about',   'About Us'),
-                        ('booking', 'Booking'),
-                        ('location','Location'),
+                        ('home',     'Home'),
+                        ('about',    'About Us'),
+                        ('services', 'Services'),
+                        ('booking',  'Booking'),
+                        ('reviews',  'Reviews'),
+                        ('location', 'Location'),
                     ] %}
                     {% for endpoint, label in nav_links %}
                     <a href="{{ url_for(endpoint) }}"
@@ -162,19 +164,35 @@
                         {{ label }}
                     </a>
                     {% endfor %}
-                    <!-- Review link scrolls to #review on home page -->
-                    <a href="{{ url_for('home') }}#review"
-                       class="nav-link relative px-4 py-2 text-sm font-medium text-barber-cream/70 hover:text-barber-red transition-colors duration-300">
-                        Review
-                    </a>
                 </div>
 
-                <!-- CTA + hamburger -->
-                <div class="flex items-center gap-4">
-                    <a href="{{ url_for('register_barber') }}"
-                       class="hidden sm:inline-flex btn-primary text-sm">
-                        Register as a Barber
-                    </a>
+                <!-- CTA + auth + hamburger -->
+                <div class="flex items-center gap-2">
+                    {% if current_user.is_authenticated %}
+                        <!-- Loyalty pill -->
+                        <a href="{{ url_for('loyalty') }}"
+                           class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-barber-red/10 border border-barber-red/20 text-barber-red text-xs font-semibold hover:bg-barber-red/20 transition-colors">
+                            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            {{ current_user.loyalty_points }} pts
+                        </a>
+                        <a href="{{ url_for('customer_dashboard') }}"
+                           class="hidden sm:inline-flex btn-outline text-sm">
+                            Dashboard
+                        </a>
+                        <a href="{{ url_for('logout') }}"
+                           class="hidden sm:inline-flex px-4 py-2 text-sm font-medium text-barber-cream/50 hover:text-barber-red transition-colors">
+                            Logout
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('login') }}"
+                           class="hidden sm:inline-flex px-4 py-2 text-sm font-medium text-barber-cream/60 hover:text-barber-red transition-colors">
+                            Login
+                        </a>
+                        <a href="{{ url_for('register_barber') }}"
+                           class="hidden sm:inline-flex btn-primary text-sm">
+                            Register as a Barber
+                        </a>
+                    {% endif %}
 
                     <!-- Hamburger -->
                     <button @click="open = !open" class="md:hidden p-2 text-barber-cream/70 hover:text-barber-red transition-colors">
@@ -195,12 +213,22 @@
              x-transition:leave-end="opacity-0 -translate-y-2"
              class="md:hidden bg-barber-dark/95 backdrop-blur-xl border-t border-barber-border">
             <div class="px-4 py-4 space-y-1">
-                <a href="{{ url_for('home') }}" class="block px-4 py-3 rounded-lg text-barber-cream/80 hover:bg-barber-muted hover:text-barber-red transition-colors">Home</a>
-                <a href="{{ url_for('about') }}" class="block px-4 py-3 rounded-lg text-barber-cream/80 hover:bg-barber-muted hover:text-barber-red transition-colors">About Us</a>
-                <a href="{{ url_for('booking') }}" class="block px-4 py-3 rounded-lg text-barber-cream/80 hover:bg-barber-muted hover:text-barber-red transition-colors">Booking</a>
+                <a href="{{ url_for('home') }}"      class="block px-4 py-3 rounded-lg text-barber-cream/80 hover:bg-barber-muted hover:text-barber-red transition-colors">Home</a>
+                <a href="{{ url_for('about') }}"     class="block px-4 py-3 rounded-lg text-barber-cream/80 hover:bg-barber-muted hover:text-barber-red transition-colors">About Us</a>
+                <a href="{{ url_for('services') }}"  class="block px-4 py-3 rounded-lg text-barber-cream/80 hover:bg-barber-muted hover:text-barber-red transition-colors">Services</a>
+                <a href="{{ url_for('booking') }}"   class="block px-4 py-3 rounded-lg text-barber-cream/80 hover:bg-barber-muted hover:text-barber-red transition-colors">Booking</a>
+                <a href="{{ url_for('reviews') }}"   class="block px-4 py-3 rounded-lg text-barber-cream/80 hover:bg-barber-muted hover:text-barber-red transition-colors">Reviews</a>
                 <a href="{{ url_for('location') }}" class="block px-4 py-3 rounded-lg text-barber-cream/80 hover:bg-barber-muted hover:text-barber-red transition-colors">Location</a>
-                <a href="{{ url_for('home') }}#review" class="block px-4 py-3 rounded-lg text-barber-cream/80 hover:bg-barber-muted hover:text-barber-red transition-colors">Review</a>
-                <a href="{{ url_for('register_barber') }}" class="block px-4 py-3 rounded-lg text-barber-red font-semibold hover:bg-barber-muted transition-colors sm:hidden">Register as a Barber</a>
+                <div class="border-t border-barber-border/50 my-2"></div>
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('customer_dashboard') }}" class="block px-4 py-3 rounded-lg text-barber-cream/80 hover:bg-barber-muted hover:text-barber-red transition-colors">Dashboard</a>
+                    <a href="{{ url_for('loyalty') }}"            class="block px-4 py-3 rounded-lg text-barber-cream/80 hover:bg-barber-muted hover:text-barber-red transition-colors">Loyalty ({{ current_user.loyalty_points }} pts)</a>
+                    <a href="{{ url_for('logout') }}"             class="block px-4 py-3 rounded-lg text-barber-cream/50 hover:bg-barber-muted hover:text-barber-red transition-colors">Logout</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}"          class="block px-4 py-3 rounded-lg text-barber-cream/80 hover:bg-barber-muted hover:text-barber-red transition-colors">Login</a>
+                    <a href="{{ url_for('signup') }}"         class="block px-4 py-3 rounded-lg text-barber-cream/80 hover:bg-barber-muted hover:text-barber-red transition-colors">Sign Up</a>
+                    <a href="{{ url_for('register_barber') }}" class="block px-4 py-3 rounded-lg text-barber-red font-semibold hover:bg-barber-muted transition-colors">Register as a Barber</a>
+                {% endif %}
             </div>
         </div>
     </nav>
@@ -233,6 +261,7 @@
                     <ul class="space-y-2 text-sm text-barber-cream/40">
                         <li><a href="{{ url_for('home') }}" class="hover:text-barber-red transition-colors">Home</a></li>
                         <li><a href="{{ url_for('about') }}" class="hover:text-barber-red transition-colors">About Us</a></li>
+                        <li><a href="{{ url_for('reviews') }}" class="hover:text-barber-red transition-colors">Reviews</a></li>
                         <li><a href="{{ url_for('booking') }}" class="hover:text-barber-red transition-colors">Book Appointment</a></li>
                         <li><a href="{{ url_for('location') }}" class="hover:text-barber-red transition-colors">Location</a></li>
                     </ul>
