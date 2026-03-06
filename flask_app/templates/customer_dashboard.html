@@ -1,0 +1,337 @@
+{% extends "base.html" %}
+{% block title %}My Dashboard{% endblock %}
+
+{% block content %}
+<div class="h-24"></div>
+
+<section class="py-12 px-4">
+    <div class="max-w-6xl mx-auto space-y-6">
+
+        <!-- ── Flash messages ── -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="space-y-2">
+            {% for category, message in messages %}
+            <div class="flex items-center gap-3 px-4 py-3 rounded-lg border text-sm
+                        {% if category == 'error' %}bg-red-500/10 border-red-500/20 text-red-400
+                        {% else %}bg-green-500/10 border-green-500/20 text-green-400{% endif %}">
+                {% if category == 'error' %}
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                {% else %}
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                {% endif %}
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- WELCOME + STATS                                            -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <div class="glass-card rounded-2xl border border-barber-border p-8">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+                <!-- Identity -->
+                <div>
+                    <p class="text-barber-red text-xs font-semibold uppercase tracking-[0.3em] mb-2">Member Dashboard</p>
+                    <h1 class="font-display text-2xl sm:text-3xl font-bold">
+                        Welcome back, {{ current_user.full_name.split()[0] }}!
+                    </h1>
+                    <p class="text-barber-cream/40 text-sm mt-1">
+                        Member since {{ current_user.created_at.strftime('%B %Y') }} &nbsp;·&nbsp;
+                        ID: <span class="font-mono text-barber-cream/60">{{ current_user.loyalty_id }}</span>
+                    </p>
+                </div>
+                <!-- Stats pills -->
+                <div class="flex items-center gap-3 flex-wrap">
+                    <a href="{{ url_for('loyalty') }}"
+                       class="flex flex-col items-center px-5 py-3 rounded-xl bg-barber-red/10 border border-barber-red/20
+                              hover:bg-barber-red/20 transition-colors cursor-pointer">
+                        <div class="flex items-center gap-1.5 mb-0.5">
+                            <svg class="w-4 h-4 text-barber-red" fill="currentColor" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <span class="text-xl font-bold text-barber-cream">{{ current_user.loyalty_points }}</span>
+                        </div>
+                        <p class="text-[11px] text-barber-cream/40 uppercase tracking-wider">Loyalty Pts</p>
+                    </a>
+                    <div class="flex flex-col items-center px-5 py-3 rounded-xl bg-barber-muted/60 border border-barber-border">
+                        <span class="text-xl font-bold text-barber-cream">{{ upcoming|length }}</span>
+                        <p class="text-[11px] text-barber-cream/40 uppercase tracking-wider mt-0.5">Upcoming</p>
+                    </div>
+                    <div class="flex flex-col items-center px-5 py-3 rounded-xl bg-barber-muted/60 border border-barber-border">
+                        <span class="text-xl font-bold text-barber-cream">{{ total_bookings }}</span>
+                        <p class="text-[11px] text-barber-cream/40 uppercase tracking-wider mt-0.5">Total Visits</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- QUICK ACTIONS                                              -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+
+            <a href="{{ url_for('booking') }}"
+               class="group flex flex-col items-center gap-3 py-6 rounded-xl glass-card border border-barber-border
+                      hover:border-barber-red/40 hover:bg-barber-red/5 transition-all duration-200">
+                <div class="w-10 h-10 rounded-full bg-barber-red/10 border border-barber-red/20 flex items-center justify-center
+                            group-hover:bg-barber-red/20 transition-colors">
+                    <svg class="w-5 h-5 text-barber-red" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                        <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/>
+                        <line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+                    </svg>
+                </div>
+                <span class="text-xs font-medium text-barber-cream/60 group-hover:text-barber-cream transition-colors text-center leading-tight">
+                    Book Appointment
+                </span>
+            </a>
+
+            <a href="{{ url_for('services') }}"
+               class="group flex flex-col items-center gap-3 py-6 rounded-xl glass-card border border-barber-border
+                      hover:border-barber-red/40 hover:bg-barber-red/5 transition-all duration-200">
+                <div class="w-10 h-10 rounded-full bg-barber-muted/60 border border-barber-border flex items-center justify-center
+                            group-hover:bg-barber-red/10 group-hover:border-barber-red/20 transition-colors">
+                    <svg class="w-5 h-5 text-barber-cream/40 group-hover:text-barber-red transition-colors" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                        <circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/>
+                        <line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/>
+                        <line x1="8.12" y1="8.12" x2="12" y2="12"/>
+                    </svg>
+                </div>
+                <span class="text-xs font-medium text-barber-cream/60 group-hover:text-barber-cream transition-colors text-center leading-tight">
+                    Browse Services
+                </span>
+            </a>
+
+            <a href="{{ url_for('loyalty') }}"
+               class="group flex flex-col items-center gap-3 py-6 rounded-xl glass-card border border-barber-border
+                      hover:border-barber-red/40 hover:bg-barber-red/5 transition-all duration-200">
+                <div class="w-10 h-10 rounded-full bg-barber-muted/60 border border-barber-border flex items-center justify-center
+                            group-hover:bg-barber-red/10 group-hover:border-barber-red/20 transition-colors">
+                    <svg class="w-5 h-5 text-barber-cream/40 group-hover:text-barber-red transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                    </svg>
+                </div>
+                <span class="text-xs font-medium text-barber-cream/60 group-hover:text-barber-cream transition-colors text-center leading-tight">
+                    Rewards & Points
+                </span>
+            </a>
+
+            <a href="{{ url_for('testimonials') }}"
+               class="group flex flex-col items-center gap-3 py-6 rounded-xl glass-card border border-barber-border
+                      hover:border-barber-red/40 hover:bg-barber-red/5 transition-all duration-200">
+                <div class="w-10 h-10 rounded-full bg-barber-muted/60 border border-barber-border flex items-center justify-center
+                            group-hover:bg-barber-red/10 group-hover:border-barber-red/20 transition-colors">
+                    <svg class="w-5 h-5 text-barber-cream/40 group-hover:text-barber-red transition-colors" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                        <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+                    </svg>
+                </div>
+                <span class="text-xs font-medium text-barber-cream/60 group-hover:text-barber-cream transition-colors text-center leading-tight">
+                    Leave a Review
+                </span>
+            </a>
+
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- UPCOMING BOOKINGS + RECENT ACTIVITY                       -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+            <!-- Upcoming bookings -->
+            <div class="glass-card rounded-2xl border border-barber-border p-6 flex flex-col">
+                <div class="flex items-center justify-between mb-5">
+                    <h2 class="flex items-center gap-2 text-barber-red font-semibold text-sm uppercase tracking-widest">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        Upcoming
+                    </h2>
+                    <a href="{{ url_for('booking') }}"
+                       class="text-xs text-barber-red hover:underline flex items-center gap-1">
+                        + New booking
+                    </a>
+                </div>
+
+                {% if upcoming %}
+                <div class="space-y-3 flex-1">
+                    {% for bkg in upcoming %}
+                    <div class="p-4 rounded-xl bg-barber-muted/40 border border-barber-border/50">
+                        <div class="flex items-start justify-between gap-2 mb-2">
+                            <div class="min-w-0">
+                                <p class="font-semibold text-sm text-barber-cream truncate">{{ bkg.service.name }}</p>
+                                <p class="text-xs text-barber-cream/50 mt-0.5">with {{ bkg.barber.full_name }}</p>
+                            </div>
+                            <span class="flex-shrink-0 px-2.5 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wide
+                                         {% if bkg.status == 'confirmed' %}bg-green-500/10 text-green-400 border border-green-500/20
+                                         {% else %}bg-amber-500/10 text-amber-400 border border-amber-500/20{% endif %}">
+                                {{ bkg.status }}
+                            </span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <p class="text-xs text-barber-cream/40 flex items-center gap-1.5">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                {{ bkg.appointment_date.strftime('%b %d, %Y') }} · {{ bkg.appointment_time }}
+                            </p>
+                            <form method="POST" action="{{ url_for('cancel_booking', booking_id=bkg.id) }}"
+                                  onsubmit="return confirm('Cancel this appointment?')">
+                                <button type="submit"
+                                        class="text-[10px] text-barber-cream/20 hover:text-red-400 transition-colors uppercase tracking-wide">
+                                    Cancel
+                                </button>
+                            </form>
+                        </div>
+                        {% if bkg.customer_notes %}
+                        <p class="mt-2 text-[11px] text-barber-cream/30 italic truncate">"{{ bkg.customer_notes }}"</p>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="flex-1 flex flex-col items-center justify-center py-10 text-center">
+                    <svg class="w-10 h-10 text-barber-cream/10 mb-3" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    <p class="text-barber-cream/30 text-sm">No upcoming bookings.</p>
+                    <a href="{{ url_for('booking') }}"
+                       class="inline-flex items-center gap-1 mt-3 text-barber-red text-xs hover:underline">
+                        Book your next appointment
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Recent point activity -->
+            <div class="glass-card rounded-2xl border border-barber-border p-6 flex flex-col">
+                <div class="flex items-center justify-between mb-5">
+                    <h2 class="flex items-center gap-2 text-barber-red font-semibold text-sm uppercase tracking-widest">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        Point Activity
+                    </h2>
+                    <a href="{{ url_for('loyalty') }}"
+                       class="text-xs text-barber-red hover:underline flex items-center gap-1">
+                        View all
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+
+                {% if recent_txns %}
+                <div class="flex-1 divide-y divide-barber-border/30">
+                    {% for txn in recent_txns %}
+                    <div class="flex items-center justify-between py-3">
+                        <div class="min-w-0 pr-3">
+                            <p class="text-sm text-barber-cream/70 truncate">{{ txn.description }}</p>
+                            <p class="text-[11px] text-barber-cream/30 mt-0.5">{{ txn.created_at.strftime('%b %d, %Y') }}</p>
+                        </div>
+                        <span class="font-bold text-sm flex-shrink-0
+                                     {% if txn.points_change > 0 %}text-green-400{% else %}text-barber-red{% endif %}">
+                            {% if txn.points_change > 0 %}+{% endif %}{{ txn.points_change }} pts
+                        </span>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Redeem CTA -->
+                <a href="{{ url_for('loyalty') }}"
+                   class="mt-4 w-full flex items-center justify-center gap-2 py-2.5 rounded-lg border border-barber-red/20
+                          bg-barber-red/5 text-barber-red text-xs font-semibold hover:bg-barber-red/10 transition-colors">
+                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    {{ current_user.loyalty_points }} pts · Redeem Rewards
+                </a>
+
+                {% else %}
+                <div class="flex-1 flex flex-col items-center justify-center py-10 text-center">
+                    <svg class="w-10 h-10 text-barber-cream/10 mb-3" fill="currentColor" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <p class="text-barber-cream/30 text-sm">No points activity yet.</p>
+                    <p class="text-barber-cream/20 text-xs mt-1">Points are awarded on completed visits.</p>
+                    <a href="{{ url_for('loyalty') }}"
+                       class="inline-flex items-center gap-1 mt-3 text-barber-red text-xs hover:underline">
+                        View loyalty rewards
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- BOOKING HISTORY                                            -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        {% if past %}
+        <div class="glass-card rounded-2xl border border-barber-border overflow-hidden">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-barber-border">
+                <h2 class="flex items-center gap-2 text-barber-red font-semibold text-sm uppercase tracking-widest">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    Booking History
+                </h2>
+                <a href="{{ url_for('services') }}"
+                   class="text-xs text-barber-red hover:underline">Book again</a>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-barber-border/50">
+                            <th class="px-5 py-3 text-left text-xs text-barber-cream/30 uppercase tracking-wider font-medium">Date</th>
+                            <th class="px-5 py-3 text-left text-xs text-barber-cream/30 uppercase tracking-wider font-medium">Service</th>
+                            <th class="px-5 py-3 text-left text-xs text-barber-cream/30 uppercase tracking-wider font-medium">Barber</th>
+                            <th class="px-5 py-3 text-left text-xs text-barber-cream/30 uppercase tracking-wider font-medium">Time</th>
+                            <th class="px-5 py-3 text-left text-xs text-barber-cream/30 uppercase tracking-wider font-medium">Status</th>
+                            <th class="px-5 py-3 text-right text-xs text-barber-cream/30 uppercase tracking-wider font-medium">Points</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for bkg in past %}
+                        <tr class="border-b border-barber-border/30 last:border-0 hover:bg-barber-muted/20 transition-colors">
+                            <td class="px-5 py-3.5 text-barber-cream/50 text-xs whitespace-nowrap">
+                                {{ bkg.appointment_date.strftime('%b %d, %Y') }}
+                            </td>
+                            <td class="px-5 py-3.5 text-barber-cream/80 font-medium">{{ bkg.service.name }}</td>
+                            <td class="px-5 py-3.5 text-barber-cream/50">{{ bkg.barber.full_name }}</td>
+                            <td class="px-5 py-3.5 text-barber-cream/50 text-xs">{{ bkg.appointment_time }}</td>
+                            <td class="px-5 py-3.5">
+                                <span class="inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wide
+                                             {% if bkg.status == 'completed' %}bg-green-500/10 text-green-400 border border-green-500/20
+                                             {% elif bkg.status == 'confirmed' %}bg-blue-500/10 text-blue-400 border border-blue-500/20
+                                             {% elif bkg.status == 'cancelled' %}bg-barber-muted text-barber-cream/30 border border-barber-border
+                                             {% else %}bg-amber-500/10 text-amber-400 border border-amber-500/20{% endif %}">
+                                    {{ bkg.status }}
+                                </span>
+                            </td>
+                            <td class="px-5 py-3.5 text-right">
+                                {% if bkg.status == 'completed' %}
+                                <span class="text-green-400 text-xs font-semibold">+{{ bkg.service.loyalty_points_awarded }} pts</span>
+                                {% else %}
+                                <span class="text-barber-cream/20 text-xs">—</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- FOOTER ACTIONS                                             -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <div class="flex flex-wrap items-center justify-between gap-4 pt-2 pb-8">
+            <div class="flex items-center gap-3">
+                <a href="{{ url_for('home') }}"
+                   class="text-sm text-barber-cream/40 hover:text-barber-red transition-colors flex items-center gap-1.5">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                    Home
+                </a>
+                <span class="text-barber-cream/20">·</span>
+                <a href="{{ url_for('about') }}"
+                   class="text-sm text-barber-cream/40 hover:text-barber-red transition-colors">About Us</a>
+                <span class="text-barber-cream/20">·</span>
+                <a href="{{ url_for('testimonials') }}#review"
+                   class="text-sm text-barber-cream/40 hover:text-barber-red transition-colors">Leave a Review</a>
+            </div>
+            <a href="{{ url_for('logout') }}"
+               class="text-sm text-barber-cream/30 hover:text-red-400 transition-colors flex items-center gap-1.5">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                Logout
+            </a>
+        </div>
+
+    </div>
+</section>
+{% endblock %}
