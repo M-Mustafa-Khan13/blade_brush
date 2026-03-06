@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+{% block title %}Loyalty & Rewards{% endblock %}
+
+{% block content %}
+<div class="h-24"></div>
+
+<section class="py-16 px-4">
+    <div class="max-w-5xl mx-auto">
+
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <span class="text-barber-red text-xs font-semibold uppercase tracking-[0.3em]">Your Rewards</span>
+            <h1 class="font-display text-3xl sm:text-4xl md:text-5xl font-bold mt-3">Loyalty Programme</h1>
+            <p class="mt-4 text-barber-cream/40 max-w-xl mx-auto">
+                Every appointment earns you points. Redeem them for free services and exclusive rewards.
+            </p>
+            <div class="razor-divider w-24 mx-auto mt-6"></div>
+        </div>
+
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="mb-8 space-y-2">
+            {% for category, message in messages %}
+            <div class="flex items-center gap-3 px-4 py-3 rounded-lg border text-sm
+                        {% if category == 'error' %}bg-red-500/10 border-red-500/20 text-red-400
+                        {% else %}bg-green-500/10 border-green-500/20 text-green-400{% endif %}">
+                {% if category == 'error' %}
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                {% else %}
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                {% endif %}
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <!-- Loyalty ID card -->
+        <div class="glass-card rounded-2xl border border-barber-border overflow-hidden mb-8">
+            <div class="flex flex-col sm:flex-row items-center gap-6 p-8">
+                <!-- Points circle -->
+                <div class="relative flex-shrink-0 w-32 h-32">
+                    <svg class="w-32 h-32 -rotate-90" viewBox="0 0 120 120">
+                        <circle cx="60" cy="60" r="52" fill="none" stroke="#222" stroke-width="8"/>
+                        {% set pct = [((current_user.loyalty_points % 200) / 200 * 100), 100]|min %}
+                        <circle cx="60" cy="60" r="52" fill="none"
+                                stroke="#dc2626" stroke-width="8"
+                                stroke-linecap="round"
+                                stroke-dasharray="{{ (pct / 100 * 326.7)|round(1) }} 326.7"/>
+                    </svg>
+                    <div class="absolute inset-0 flex flex-col items-center justify-center">
+                        <span class="font-bold text-2xl text-barber-cream">{{ current_user.loyalty_points }}</span>
+                        <span class="text-[11px] text-barber-cream/40 uppercase tracking-wider">points</span>
+                    </div>
+                </div>
+                <!-- Info -->
+                <div class="text-center sm:text-left">
+                    <p class="text-barber-red text-xs font-semibold uppercase tracking-widest mb-2">Member Card</p>
+                    <h2 class="font-display text-2xl font-bold mb-1">{{ current_user.full_name }}</h2>
+                    <p class="text-barber-cream/40 text-sm mb-3">
+                        Loyalty ID: <span class="font-mono text-barber-cream/70 text-base">{{ current_user.loyalty_id }}</span>
+                    </p>
+                    <p class="text-xs text-barber-cream/30 leading-relaxed max-w-sm">
+                        Present your Loyalty ID at reception when redeeming a reward.
+                    </p>
+                </div>
+            </div>
+            <!-- Barber-pole stripe bottom accent -->
+            <div class="h-1 w-full barber-pole-stripe"></div>
+        </div>
+
+        <!-- Rewards grid -->
+        <h2 class="flex items-center gap-2 text-barber-red font-semibold text-sm uppercase tracking-widest mb-5">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            Available Rewards
+        </h2>
+
+        {% if rewards %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-12">
+            {% for reward in rewards %}
+            {% set can_redeem = current_user.loyalty_points >= reward.points_required %}
+            <div class="glass-card rounded-xl border p-5 flex flex-col gap-4 transition-colors
+                        {% if can_redeem %}border-barber-red/30 hover:border-barber-red/50{% else %}border-barber-border opacity-60{% endif %}">
+                <!-- Icon -->
+                <div class="w-10 h-10 rounded-full flex items-center justify-center
+                             {% if can_redeem %}bg-barber-red/10 border border-barber-red/20{% else %}bg-barber-muted/60 border border-barber-border{% endif %}">
+                    <svg class="w-5 h-5 {% if can_redeem %}text-barber-red{% else %}text-barber-cream/25{% endif %}"
+                         fill="currentColor" viewBox="0 0 24 24">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                    </svg>
+                </div>
+                <!-- Content -->
+                <div class="flex-1">
+                    <h3 class="font-semibold text-barber-cream mb-1">{{ reward.title }}</h3>
+                    <p class="text-xs text-barber-cream/50 leading-relaxed">{{ reward.description }}</p>
+                </div>
+                <!-- Points + CTA -->
+                <div class="flex items-center justify-between gap-3">
+                    <span class="text-sm font-bold {% if can_redeem %}text-barber-red{% else %}text-barber-cream/30{% endif %}">
+                        {{ reward.points_required }} pts
+                    </span>
+                    {% if can_redeem %}
+                    <form method="POST" action="{{ url_for('redeem_reward', reward_id=reward.id) }}"
+                          onsubmit="return confirm('Redeem {{ reward.title }} for {{ reward.points_required }} points?')">
+                        <button type="submit" class="btn-primary text-xs px-4 py-2">Redeem</button>
+                    </form>
+                    {% else %}
+                    <span class="text-[11px] text-barber-cream/25 italic">
+                        Need {{ reward.points_required - current_user.loyalty_points }} more pts
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-10 mb-12">
+            <p class="text-barber-cream/30 text-sm">No rewards available at the moment.</p>
+        </div>
+        {% endif %}
+
+        <!-- Transaction history -->
+        <h2 class="flex items-center gap-2 text-barber-red font-semibold text-sm uppercase tracking-widest mb-5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            Points History
+        </h2>
+
+        <div class="glass-card rounded-2xl border border-barber-border overflow-hidden">
+            {% if transactions %}
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="border-b border-barber-border">
+                        <th class="px-5 py-3 text-left text-xs text-barber-cream/40 uppercase tracking-wider font-medium">Date</th>
+                        <th class="px-5 py-3 text-left text-xs text-barber-cream/40 uppercase tracking-wider font-medium">Description</th>
+                        <th class="px-5 py-3 text-left text-xs text-barber-cream/40 uppercase tracking-wider font-medium">Type</th>
+                        <th class="px-5 py-3 text-right text-xs text-barber-cream/40 uppercase tracking-wider font-medium">Points</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for txn in transactions %}
+                    <tr class="border-b border-barber-border/40 last:border-0 hover:bg-barber-muted/20 transition-colors">
+                        <td class="px-5 py-3.5 text-barber-cream/40 text-xs whitespace-nowrap">
+                            {{ txn.created_at.strftime('%b %d, %Y') }}
+                        </td>
+                        <td class="px-5 py-3.5 text-barber-cream/70">{{ txn.description }}</td>
+                        <td class="px-5 py-3.5">
+                            <span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wide
+                                         {% if txn.transaction_type == 'earned' %}bg-green-500/10 text-green-400
+                                         {% elif txn.transaction_type == 'redeemed' %}bg-barber-red/10 text-barber-red
+                                         {% else %}bg-barber-muted text-barber-cream/40{% endif %}">
+                                {{ txn.transaction_type }}
+                            </span>
+                        </td>
+                        <td class="px-5 py-3.5 text-right font-bold
+                                   {% if txn.points_change > 0 %}text-green-400{% else %}text-barber-red{% endif %}">
+                            {% if txn.points_change > 0 %}+{% endif %}{{ txn.points_change }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="text-center py-16">
+                <svg class="w-10 h-10 mx-auto text-barber-cream/10 mb-4" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <p class="text-barber-cream/30 text-sm">No point transactions yet.</p>
+                <p class="text-barber-cream/20 text-xs mt-1">Points appear here after your first completed appointment.</p>
+                <a href="{{ url_for('booking') }}" class="inline-flex items-center gap-1 mt-4 text-barber-red text-xs hover:underline">
+                    Book your first appointment
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                </a>
+            </div>
+            {% endif %}
+        </div>
+
+    </div>
+</section>
+{% endblock %}
