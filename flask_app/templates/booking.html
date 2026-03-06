@@ -1,0 +1,248 @@
+{% extends "base.html" %}
+{% block title %}Book an Appointment{% endblock %}
+
+{% block content %}
+<div class="h-24"></div>
+
+<section class="py-16 px-4" x-data="bookingForm()">
+    <div class="max-w-3xl mx-auto">
+
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <span class="text-barber-red text-xs font-semibold uppercase tracking-[0.3em]">Reserve Your Chair</span>
+            <h1 class="font-display text-3xl sm:text-4xl md:text-5xl font-bold mt-3">Book an Appointment</h1>
+            <p class="mt-4 text-barber-cream/40 max-w-xl mx-auto">
+                Choose your service, pick a barber, and we'll hold your slot.
+            </p>
+            <div class="razor-divider w-24 mx-auto mt-6"></div>
+        </div>
+
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="mb-8 space-y-2">
+            {% for category, message in messages %}
+            <div class="flex items-center gap-3 px-4 py-3 rounded-lg border text-sm
+                        {% if category == 'error' %}bg-red-500/10 border-red-500/20 text-red-400
+                        {% else %}bg-green-500/10 border-green-500/20 text-green-400{% endif %}">
+                {% if category == 'error' %}
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                {% else %}
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                {% endif %}
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <!-- No barbers warning -->
+        {% if not barbers %}
+        <div class="glass-card rounded-2xl border border-barber-border p-12 text-center">
+            <svg class="w-12 h-12 mx-auto text-barber-cream/20 mb-4" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/></svg>
+            <h2 class="font-display text-xl font-semibold mb-2">No barbers available yet</h2>
+            <p class="text-barber-cream/40 text-sm">Check back soon — we're onboarding our team.</p>
+        </div>
+        {% else %}
+
+        <!-- Booking form -->
+        <form method="POST" action="{{ url_for('booking') }}" class="glass-card rounded-2xl border border-barber-border p-8 sm:p-10 space-y-8">
+
+            <!-- ── Section 1: Your Details (read-only) ── -->
+            <div>
+                <h3 class="flex items-center gap-2 text-barber-red font-semibold text-sm uppercase tracking-widest mb-5">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    Your Details
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-xs text-barber-cream/40 mb-1">Name</label>
+                        <input type="text" value="{{ current_user.full_name }}" readonly
+                               class="form-input w-full opacity-60 cursor-default">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-barber-cream/40 mb-1">Email</label>
+                        <input type="email" value="{{ current_user.email }}" readonly
+                               class="form-input w-full opacity-60 cursor-default">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-barber-cream/40 mb-1">Phone</label>
+                        <input type="tel" value="{{ current_user.phone }}" readonly
+                               class="form-input w-full opacity-60 cursor-default">
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Section 2: Service ── -->
+            <div>
+                <h3 class="flex items-center gap-2 text-barber-red font-semibold text-sm uppercase tracking-widest mb-5">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>
+                    Service *
+                </h3>
+                <div class="relative">
+                    <select name="service_id" id="service-select" required class="form-input w-full appearance-none cursor-pointer">
+                        <option value="" disabled {% if not (form and form.service_id) and not preselect_service %}selected{% endif %} class="bg-barber-dark">Select a service</option>
+                        {% for svc in services %}
+                        <option value="{{ svc.id }}"
+                                {% if (form and form.get('service_id')|int == svc.id) or (preselect_service == svc.id) %}selected{% endif %}
+                                class="bg-barber-dark">
+                            {{ svc.name }} — ${{ "%.0f"|format(svc.price) }} · {{ svc.duration_minutes }} min · +{{ svc.loyalty_points_awarded }} pts
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-barber-cream/30 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                </div>
+            </div>
+
+            <!-- ── Section 3: Barber + Date + Time ── -->
+            <div>
+                <h3 class="flex items-center gap-2 text-barber-red font-semibold text-sm uppercase tracking-widest mb-5">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    Schedule *
+                </h3>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+
+                    <!-- Barber -->
+                    <div>
+                        <label class="block text-xs text-barber-cream/40 mb-2">Barber</label>
+                        <div class="relative">
+                            <select name="barber_id" id="barber-select" required
+                                    @change="onScheduleChange()"
+                                    class="form-input w-full appearance-none cursor-pointer">
+                                <option value="" disabled {% if not form %}selected{% endif %} class="bg-barber-dark">Select barber</option>
+                                {% for barber in barbers %}
+                                <option value="{{ barber.id }}"
+                                        {% if form and form.get('barber_id')|int == barber.id %}selected{% endif %}
+                                        class="bg-barber-dark">{{ barber.full_name }}</option>
+                                {% endfor %}
+                            </select>
+                            <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-barber-cream/30 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                        </div>
+                    </div>
+
+                    <!-- Date -->
+                    <div>
+                        <label class="block text-xs text-barber-cream/40 mb-2">Date</label>
+                        <input type="date" name="appointment_date" id="date-select"
+                               min="{{ today }}"
+                               value="{{ form.appointment_date if form else '' }}"
+                               @change="onScheduleChange()"
+                               required class="form-input w-full">
+                    </div>
+
+                    <!-- Time -->
+                    <div>
+                        <label class="block text-xs text-barber-cream/40 mb-2">Time</label>
+                        <div class="relative">
+                            <select name="appointment_time" id="time-select" required
+                                    class="form-input w-full appearance-none cursor-pointer"
+                                    :disabled="loadingSlots || slots.length === 0">
+                                <template x-if="!barberId || !selectedDate">
+                                    <option value="">Select barber &amp; date first</option>
+                                </template>
+                                <template x-if="loadingSlots">
+                                    <option value="">Loading slots…</option>
+                                </template>
+                                <template x-if="!loadingSlots && slots.length === 0 && barberId && selectedDate">
+                                    <option value="">No slots available</option>
+                                </template>
+                                <template x-if="!loadingSlots && slots.length > 0">
+                                    <template x-for="slot in slots" :key="slot">
+                                        <option :value="slot" x-text="slot"
+                                                :selected="slot === '{{ form.appointment_time if form else '' }}'">
+                                        </option>
+                                    </template>
+                                </template>
+                            </select>
+                            <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-barber-cream/30 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                        </div>
+                        <!-- Availability indicator -->
+                        <p class="mt-1.5 text-[11px]"
+                           x-show="!loadingSlots && barberId && selectedDate"
+                           :class="slots.length > 0 ? 'text-green-500/70' : 'text-red-400/70'">
+                            <span x-text="slots.length > 0 ? slots.length + ' slot(s) available' : 'Fully booked — pick another date'"></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Section 4: Notes ── -->
+            <div>
+                <h3 class="flex items-center gap-2 text-barber-red font-semibold text-sm uppercase tracking-widest mb-5">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    Notes <span class="text-barber-cream/25 font-normal normal-case tracking-normal text-xs ml-1">(optional)</span>
+                </h3>
+                <textarea name="customer_notes" rows="3"
+                          placeholder="Any requests or special instructions for your barber…"
+                          class="form-input w-full resize-none">{{ form.customer_notes if form else '' }}</textarea>
+            </div>
+
+            <!-- Submit -->
+            <div class="border-t border-barber-border pt-6 text-center">
+                <button type="submit" class="btn-primary text-base px-12 py-3.5 pulse-glow"
+                        :disabled="loadingSlots">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    Confirm Booking
+                </button>
+                <p class="mt-3 text-xs text-barber-cream/25">
+                    You'll earn loyalty points once your appointment is completed.
+                </p>
+            </div>
+        </form>
+        {% endif %}
+
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function bookingForm() {
+    return {
+        barberId:     '',
+        selectedDate: '',
+        slots:        [],
+        loadingSlots: false,
+
+        init() {
+            // Trigger slot load if form was re-rendered with values (validation error)
+            const barberEl = document.getElementById('barber-select');
+            const dateEl   = document.getElementById('date-select');
+            if (barberEl && dateEl && barberEl.value && dateEl.value) {
+                this.barberId     = barberEl.value;
+                this.selectedDate = dateEl.value;
+                this.fetchSlots();
+            }
+        },
+
+        onScheduleChange() {
+            const barberEl = document.getElementById('barber-select');
+            const dateEl   = document.getElementById('date-select');
+            this.barberId     = barberEl ? barberEl.value : '';
+            this.selectedDate = dateEl   ? dateEl.value   : '';
+            if (this.barberId && this.selectedDate) {
+                this.fetchSlots();
+            } else {
+                this.slots = [];
+            }
+        },
+
+        async fetchSlots() {
+            this.loadingSlots = true;
+            this.slots = [];
+            try {
+                const res  = await fetch(`/api/available-slots/${this.barberId}/${this.selectedDate}`);
+                const data = await res.json();
+                this.slots = data.slots || [];
+            } catch (_) {
+                this.slots = [];
+            } finally {
+                this.loadingSlots = false;
+            }
+        }
+    };
+}
+</script>
+{% endblock %}
